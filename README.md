@@ -4,7 +4,7 @@
  
 ## Goals
 1. Deterministic. Should get the same result on all platforms. 
-2. Supports rollback. Should be able to save/restore anything having to do with the sim and play it back.
+2. Supports rollback. Should be able to save/restore anything having to do with the simulation and have it play back the exact same.
 
 ## Resources
 * [The Great Divide: Unique Visuals and Deterministic Gameplay in Deserts of Kharak](https://www.youtube.com/watch?v=wwLW6CjswxM)  
