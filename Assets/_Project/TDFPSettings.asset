@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: TDFPSettings
   m_EditorClassIdentifier: 
   AutoSimulation: 1
+  deltaTime:
+    raw: 1092
   gravity:
     _x:
       raw: 0
@@ -20,3 +22,8 @@ MonoBehaviour:
       raw: 0
   minimumFrictionImpulse:
     raw: 655
+  biasRelative:
+    raw: 62259
+  biasAbsolute:
+    raw: 655
+  solveCollisionIterations: 1

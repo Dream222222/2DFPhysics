@@ -22,6 +22,7 @@
  */
 
 using System;
+using UnityEngine;
 
 namespace FixedPointy {
     [Serializable]
@@ -66,7 +67,8 @@ namespace FixedPointy {
 		public static FixVec2 operator - (FixVec2 lhs, Fix rhs) {
 			return new FixVec2(lhs._x - rhs, lhs._y - rhs);
 		}
-		public static FixVec2 operator * (FixVec2 lhs, Fix rhs) {
+
+        public static FixVec2 operator * (FixVec2 lhs, Fix rhs) {
 			return lhs.ScalarMultiply(rhs);
 		}
 		public static FixVec2 operator * (Fix lhs, FixVec2 rhs) {
@@ -137,19 +139,34 @@ namespace FixedPointy {
             return (_x*_x)+(_y*_y);
         }
 
-		public FixVec2 Normalize () {
-			if (_x == 0 && _y == 0)
-				return FixVec2.Zero;
+		public void Normalize () {
+            if (_x == 0 && _y == 0)
+                return;
 
 			var m = GetMagnitude();
-			return new FixVec2(_x / m, _y / m);
+            _x /= m;
+            _y /= m;
 		}
 
-		public override string ToString () {
+        public FixVec2 Normalized()
+        {
+            if (_x == 0 && _y == 0)
+                return FixVec2.Zero;
+
+            var m = GetMagnitude();
+            return new FixVec2(_x / m, _y / m);
+        }
+
+        public override string ToString () {
 			return string.Format("({0}, {1})", _x, _y);
 		}
 
-        public override bool Equals(Object obj)
+        public static explicit operator Vector3(FixVec2 v)
+        {
+            return new Vector3((float)v.X, (float)v.Y, 0);
+        }
+
+        public override bool Equals(System.Object obj)
         {
             //Check for null and compare run-time types.
             if ((obj == null) || !this.GetType().Equals(obj.GetType()))

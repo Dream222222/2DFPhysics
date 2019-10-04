@@ -26,7 +26,10 @@ namespace TDFP.Core
 
         public void solve()
         {
+            int ia = (int)A.coll.GetCType();
+            int ib = (int)B.coll.GetCType();
 
+            CollisionChecks.dispatch[ia, ib].HandleCollision(this, A, B);
         }
 
         public void initialize()
@@ -51,7 +54,7 @@ namespace TDFP.Core
                 // Determine if we should perform a resting collision or not
                 // The idea is if the only thing moving this object is gravity,
                 // then the collision should be performed without any restitution
-                if(rv.GetMagnitudeSquared() < TDFPhysics.instance.settings.resting)
+                if(rv.GetMagnitudeSquared() < TDFPhysics.instance.resting)
                 {
                     e = 0;
                 }
@@ -61,7 +64,7 @@ namespace TDFP.Core
         public void ApplyImpulse()
         {
             // Early out and positional correct if both objects have infinite mass
-            if(A.info.massData.inv_mass + B.info.massData.inv_mass == 0)
+            if(A.invMass + B.invMass == 0)
             {
                 InfiniteMassCorrection();
                 return;
@@ -86,9 +89,9 @@ namespace TDFP.Core
 
                 Fix raCrossN = FixVec2.Cross(ra, normal);
                 Fix rbCrossN = FixVec2.Cross(rb, normal);
-                Fix invMassSum = A.info.massData.inv_mass + B.info.massData.inv_mass 
-                    + (raCrossN * raCrossN) * A.info.massData.inverse_inertia 
-                    + (rbCrossN * rbCrossN) * B.info.massData.inverse_inertia;
+                Fix invMassSum = A.invMass + B.invMass 
+                    + (raCrossN * raCrossN) * A.invInertia
+                    + (rbCrossN * rbCrossN) * B.invInertia;
 
                 // Calculate impulse scalar
                 Fix j = -(Fix.One + e) * contactVel;
@@ -105,7 +108,7 @@ namespace TDFP.Core
                     - A.info.velocity - FixVec2.Cross(A.info.angularVelocity, ra);
 
                 FixVec2 t = rv - (normal * FixVec2.Dot(rv, normal));
-                t = t.Normalize();
+                t.Normalize();
 
                 // j tangent magnitude
                 Fix jt = -FixVec2.Dot(rv, t);
@@ -136,12 +139,11 @@ namespace TDFP.Core
 
         public void PositionalCorrection()
         {
-            TDFPSettings settings = TDFPhysics.instance.settings;
-            Fix correction = FixMath.Max(settings.penetrationAllowance, 0)
-                / (A.info.massData.inv_mass + B.info.massData.inv_mass) * settings.penetrationCorrection;
+            TDFPhysics settings = TDFPhysics.instance;
+            Fix correction = FixMath.Max(settings.penetrationAllowance, 0) / (A.invMass + B.invMass) * settings.penetrationCorrection;
 
-            A.info.position -= correction * normal * A.info.massData.inv_mass;
-            B.info.position += correction * normal * B.info.massData.inv_mass;
+            A.Position -= correction * normal * A.invMass;
+            B.Position += correction * normal * B.invMass;
         }
 
         private void InfiniteMassCorrection()
@@ -149,31 +151,5 @@ namespace TDFP.Core
             A.info.velocity = FixVec2.Zero;
             B.info.velocity = FixVec2.Zero;
         }
-
-        /*
-        void ResolveCollision()
-        {
-            // Calculate relative velocity
-            FixVec2 rv = B.velocity - A.velocity;
-
-            // Calculate relative velocity in terms of the normal direction
-            Fix velAlongNormal = rv.Dot(normal);
-
-            // Do not resolve if velocities are separating
-            if (velAlongNormal > Fix.Zero)
-                return;
-
-            // Calculate restitution
-            Fix e = FixMath.Min(A.material.bounciness, B.material.bounciness);
-
-            // Calculate impulse scalar
-            Fix j = -(1 + e) * velAlongNormal;
-            j /= (Fix.One / A.mass) + (Fix.One / B.mass);
-
-            // Apply impulse
-            FixVec2 impulse = j * normal;
-            A.velocity -= Fix.One / A.mass * impulse;
-            B.velocity += Fix.One / B.mass * impulse;
-        }*/
     }
 }

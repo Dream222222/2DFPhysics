@@ -12,8 +12,8 @@ namespace TDFP.Core
         public Fix deltaTime = (Fix)(1.0f / 60.0f);
         public FixVec2 gravity;
         public Fix minimumFrictionImpulse;
-        public Fix penetrationAllowance;
-        public Fix penetrationCorrection;
-        public Fix resting;
+        public Fix biasRelative = (Fix)(0.95f);
+        public Fix biasAbsolute = (Fix)(0.01f);
+        public int solveCollisionIterations = 1;
     }
 }

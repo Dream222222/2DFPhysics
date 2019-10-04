@@ -9,29 +9,69 @@ namespace TDFP.Core
 {
     public class FPRigidbody : MonoBehaviour
     {
-        private TDFPTransform fpTransform;
+        public FixVec2 Position { 
+            get {
+                return info.position;
+            } 
+            set
+            {
+                info.position = value;
+                UpdateBounds((FixVec2)fpTransform.Position - value);
+                fpTransform.Position = value;
+            }
+        }
+
+        [HideInInspector] public Fix invMass;
+        [HideInInspector] public Fix invInertia;
+
+        public TDFPTransform fpTransform;
 
         [SerializeField] protected RigidbodyType2D bodyType;
         public FPhysicsMaterial material;
         public bool simulated;
         public bool transformSmoothing;
-        [SerializeField] public FixConst mass = 0;
+        [SerializeField] public FixConst mass = 1;
+        [SerializeField] public FixConst inertia = 0;
         [SerializeField] public FixConst gravityScale = 0;
-        public TDFPCollider coll;
+        public TFPCollider coll;
 
-        #region Varaibles
         public FPRInfo info;
         public AABB bounds;
-        #endregion
 
         private void Awake()
         {
             fpTransform = GetComponent<TDFPTransform>();
-            info.position = (FixVec2)fpTransform.position;
+            info.position = (FixVec2)fpTransform.Position;
             info.velocity = new FixVec2(0, 0);
             info.angularVelocity = 0;
             info.torque = 0;
             info.force = FixVec2.Zero;
+
+            invMass = mass != Fix.Zero ? Fix.One / mass : Fix.Zero;
+            invInertia = inertia != Fix.Zero ? Fix.One / inertia : Fix.Zero;
+
+            RecalcAABB();
+        }
+
+        public bool dd;
+        private void Update()
+        {
+            if (dd)
+            {
+                Debug.Log(info.velocity);
+            }
+        }
+
+        public void UpdateBounds(FixVec2 diff)
+        {
+            coll.UpdateAABB(diff);
+            bounds = coll.boundingBox;
+        }
+
+        public void RecalcAABB()
+        {
+            coll.RecalcAABB(info.position);
+            bounds = coll.boundingBox;
         }
 
         public void FPUpdate(Fix dt)
@@ -71,13 +111,19 @@ namespace TDFP.Core
 
         public void ApplyImpulse(FixVec2 impulse, FixVec2 contactVector)
         {
-            info.velocity += impulse * info.massData.inv_mass;
-            info.angularVelocity += info.massData.inverse_inertia * FixVec2.Cross(contactVector, impulse);
+            info.velocity += impulse * invMass;
+            info.angularVelocity += invInertia * FixVec2.Cross(contactVector, impulse);
         }
 
         public void SetBodyType(RigidbodyType2D rType)
         {
             bodyType = rType;
+        }
+
+        public virtual void SetRotation(Fix rot)
+        {
+            info.rotation = rot;
+            coll.SetRotation(rot);
         }
     }
 }

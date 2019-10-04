@@ -22,6 +22,7 @@
  */
 
 using System;
+using UnityEngine;
 
 namespace FixedPointy {
     [Serializable]
@@ -68,6 +69,11 @@ namespace FixedPointy {
 		public static FixVec3 operator / (FixVec3 lhs, Fix rhs) {
 			return new FixVec3(lhs._x / rhs, lhs._y / rhs, lhs._z / rhs);
 		}
+
+        public static explicit operator Vector3(FixVec3 v)
+        {
+            return new Vector3((float)v._x, (float)v._y, (float)v._z);
+        }
 
         public static Fix Dot(FixVec3 lhs, FixVec3 rhs)
         {

@@ -8,7 +8,6 @@ namespace TDFP.Core
     [System.Serializable]
     public struct FPRInfo
     {
-        public MassData massData;
         public FixVec2 position;
         public Fix rotation;
         public FixVec2 velocity;
@@ -18,15 +17,4 @@ namespace TDFP.Core
         public Fix staticFriction;
         public Fix dynamicFriction;
     }
-
-    [System.Serializable]
-    public struct MassData
-    {
-        public Fix mass;
-        public Fix inv_mass;
-
-        // For rotations (not covered in this article)
-        public Fix inertia;
-        public Fix inverse_inertia;
-    };
 }

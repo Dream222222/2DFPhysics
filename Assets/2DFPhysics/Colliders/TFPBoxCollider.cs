@@ -5,7 +5,7 @@ using FixedPointy;
 
 namespace TDFP.Colliders
 {
-    public class TDFPBoxCollider : TDFPCollider
+    public class TFPBoxCollider : TFPCollider
     {
         public FixVec2 size;
         public FixConst edgeRadius;
