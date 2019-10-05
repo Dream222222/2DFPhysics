@@ -6,18 +6,6 @@ using System;
 
 namespace TDFP.Core
 {
-    public struct BroadPhasePair
-    {
-        FPRigidbody A;
-        FPRigidbody B;
-
-        public BroadPhasePair(FPRigidbody a, FPRigidbody b)
-        {
-            A = a;
-            B = b;
-        }
-    };
-
     public class TDFPhysics : MonoBehaviour
     {
         public static TDFPhysics instance;
@@ -31,7 +19,6 @@ namespace TDFP.Core
         public List<FPRigidbody> bodies = new List<FPRigidbody>();
 
         //Broad Phase
-        //private List<BroadPhasePair> broadPhasePairs = new List<BroadPhasePair>();
         private List<Manifold> broadPhasePairs = new List<Manifold>();
         private List<Manifold> narrowPhasePairs = new List<Manifold>();
 
@@ -40,7 +27,15 @@ namespace TDFP.Core
             instance = this;
 
             //Init variables.
-            resting = (settings.gravity * settings.deltaTime).GetMagnitudeSquared();
+            resting = (settings.gravity * settings.deltaTime).GetMagnitudeSquared() + Fix.Epsilon;
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.U))
+            {
+                UpdatePhysics(settings.deltaTime);
+            }
         }
 
         private void FixedUpdate()
@@ -86,6 +81,27 @@ namespace TDFP.Core
                     if (CollisionChecks.AABBvsAABB(new Manifold(bodies[i], bodies[w])) == true)
                     {
                         broadPhasePairs.Add(new Manifold(bodies[i], bodies[w]));
+                    }
+                }
+            }
+            CullDups();
+        }
+
+        private void CullDups()
+        {
+            for(int i = 0; i < broadPhasePairs.Count; i++)
+            {
+                for(int w = 0; w < broadPhasePairs.Count; w++)
+                {
+                    if(i == w)
+                    {
+                        continue;
+                    }
+
+                    if(broadPhasePairs[i].A == broadPhasePairs[w].A && broadPhasePairs[i].B == broadPhasePairs[w].B
+                        || broadPhasePairs[i].A == broadPhasePairs[w].B && broadPhasePairs[i].B == broadPhasePairs[w].A)
+                    {
+                        broadPhasePairs.RemoveAt(w);
                     }
                 }
             }
@@ -151,7 +167,9 @@ namespace TDFP.Core
         private void IntegrateVelocity(FPRigidbody b, Fix dt)
         {
             if (b.invMass == Fix.Zero)
+            {
                 return;
+            }
 
             b.Position += b.info.velocity * dt;
             b.info.rotation += b.info.angularVelocity * dt;
@@ -164,7 +182,7 @@ namespace TDFP.Core
             if (b.invMass == Fix.Zero)
                 return;
 
-            b.info.velocity += (b.info.force * b.invMass + settings.gravity) * (dt / (Fix.One+Fix.One));
+            b.info.velocity += ((b.info.force * b.invMass) + (settings.gravity * b.gravityScale)) * (dt / (Fix.One+Fix.One));
             b.info.angularVelocity += b.info.torque * b.invInertia * (dt / (Fix.One+Fix.One));
         }
         #endregion

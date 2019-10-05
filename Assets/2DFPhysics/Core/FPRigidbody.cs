@@ -4,9 +4,11 @@ using UnityEngine;
 using FixedPointy;
 using TDFP.Colliders;
 using System;
+using Unity.Collections;
 
 namespace TDFP.Core
 {
+    [ExecuteInEditMode]
     public class FPRigidbody : MonoBehaviour
     {
         public FixVec2 Position { 
@@ -16,7 +18,7 @@ namespace TDFP.Core
             set
             {
                 info.position = value;
-                UpdateBounds((FixVec2)fpTransform.Position - value);
+                UpdateBounds(value - (FixVec2)fpTransform.Position);
                 fpTransform.Position = value;
             }
         }
@@ -24,23 +26,32 @@ namespace TDFP.Core
         [HideInInspector] public Fix invMass;
         [HideInInspector] public Fix invInertia;
 
-        public TDFPTransform fpTransform;
-
         [SerializeField] protected RigidbodyType2D bodyType;
+
+        #region References
+        public TDFPTransform fpTransform;
+        public TFPCollider coll;
         public FPhysicsMaterial material;
+        #endregion
+
         public bool simulated;
         public bool transformSmoothing;
-        [SerializeField] public FixConst mass = 1;
-        [SerializeField] public FixConst inertia = 0;
-        [SerializeField] public FixConst gravityScale = 0;
-        public TFPCollider coll;
-
-        public FPRInfo info;
+        [SerializeField] public Fix mass;
+        [SerializeField] public Fix inertia;
+        [SerializeField] public Fix gravityScale;
+        [SerializeField] public Fix staticFriction;
+        [SerializeField] public Fix dynamicFriction;
+        [ReadOnly]public FPRInfo info;
         public AABB bounds;
 
         private void Awake()
         {
             fpTransform = GetComponent<TDFPTransform>();
+            if (!Application.isPlaying)
+            {
+                //In edit mode, return out.
+                return;
+            }
             info.position = (FixVec2)fpTransform.Position;
             info.velocity = new FixVec2(0, 0);
             info.angularVelocity = 0;
@@ -49,25 +60,34 @@ namespace TDFP.Core
 
             invMass = mass != Fix.Zero ? Fix.One / mass : Fix.Zero;
             invInertia = inertia != Fix.Zero ? Fix.One / inertia : Fix.Zero;
+        }
 
+        private void Start()
+        {
             RecalcAABB();
         }
 
-        public bool dd;
         private void Update()
         {
-            if (dd)
+            if (!Application.isPlaying)
             {
-                Debug.Log(info.velocity);
+                //In edit mode.
+                if (transform.hasChanged)
+                {
+                    info.position = (FixVec2)fpTransform.Position;
+                    info.rotation = Mat22.MatrixToRadian(fpTransform.rotation);
+                }
             }
         }
 
+        // Update our AABB with the difference in position.
         public void UpdateBounds(FixVec2 diff)
         {
             coll.UpdateAABB(diff);
             bounds = coll.boundingBox;
         }
 
+        // Recalculate our AABB. This happens mainly whenever we rotate.
         public void RecalcAABB()
         {
             coll.RecalcAABB(info.position);
@@ -77,19 +97,6 @@ namespace TDFP.Core
         public void FPUpdate(Fix dt)
         {
 
-        }
-
-        public void UpdateTransform(float alpha)
-        {
-            Vector3 newPos = new Vector3((float)info.position.X, (float)info.position.Y, 0);
-            if (transformSmoothing)
-            {
-                transform.position = (transform.position * alpha) + (newPos * (1.0f - alpha));
-            }
-            else
-            {
-                transform.position = newPos;
-            }
         }
 
         public void AddForce(FixVec2 force, ForceMode2D mode = ForceMode2D.Force)
@@ -120,10 +127,24 @@ namespace TDFP.Core
             bodyType = rType;
         }
 
-        public virtual void SetRotation(Fix rot)
+        public virtual void SetRotation(Fix radians)
         {
-            info.rotation = rot;
-            coll.SetRotation(rot);
+            info.rotation = radians;
+            coll.SetRotation(radians);
+            fpTransform.Rotation = coll.u;
+        }
+
+        public void UpdateTransform(float alpha)
+        {
+            Vector3 newPos = new Vector3((float)info.position.X, (float)info.position.Y, 0);
+            if (transformSmoothing)
+            {
+                transform.position = (transform.position * alpha) + (newPos * (1.0f - alpha));
+            }
+            else
+            {
+                transform.position = newPos;
+            }
         }
     }
 }

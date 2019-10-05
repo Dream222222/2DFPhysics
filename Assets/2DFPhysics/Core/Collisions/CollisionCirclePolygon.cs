@@ -1,5 +1,6 @@
 ﻿using FixedPointy;
 using TDFP.Colliders;
+using UnityEngine;
 
 namespace TDFP.Core
 {
@@ -15,7 +16,7 @@ namespace TDFP.Core
             m.contactCount = 0;
 
             // Transform circle center to Polygon model space
-            FixVec2 center = B.u.Transposed() * (FixVec2)(a.fpTransform.Position - b.fpTransform.Position);
+            FixVec2 center = B.u.Transposed() * (a.Position - b.Position);
 
             // Find edge with minimum penetration
             // Exact concept as using support points in Polygon vs Polygon
@@ -39,7 +40,7 @@ namespace TDFP.Core
 
             // Grab face's vertices
             FixVec2 v1 = B.vertices[faceNormal];
-            int i2 = faceNormal + 1 < B.vertexCount ? faceNormal + 1 : 0;
+            int i2 = (faceNormal + 1) < B.vertexCount ? faceNormal + 1 : 0;
             FixVec2 v2 = B.vertices[i2];
 
             // Check to see if center is within polygon
@@ -47,7 +48,7 @@ namespace TDFP.Core
             {
                 m.contactCount = 1;
                 m.normal = -(B.u * B.normals[faceNormal]);
-                m.contacts[0] = m.normal * A.radius + ((FixVec2)a.fpTransform.Position);
+                m.contacts[0] = m.normal * A.radius + a.Position;
                 m.penetration = A.radius;
                 return;
             }
@@ -100,7 +101,7 @@ namespace TDFP.Core
 
                 n = B.u * n;
                 m.normal = -n;
-                m.contacts[0] = m.normal * A.radius + ((FixVec2)a.fpTransform.Position);
+                m.contacts[0] = m.normal * A.radius + a.Position;
                 m.contactCount = 1;
             }
         }

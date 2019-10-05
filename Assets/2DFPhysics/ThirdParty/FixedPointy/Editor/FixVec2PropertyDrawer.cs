@@ -21,7 +21,6 @@ public class FixVec2PropertyDrawer : PropertyDrawer
         var valueLabelRect = new Rect(position.x, position.y, 50, position.height);
         var valueXRect = new Rect(position.x + 65, position.y, 50, position.height);
         var valueYRect = new Rect(position.x + 115, position.y, 50, position.height);
-        //var unitRect = new Rect(position.x + 65, position.y, 60, position.height);
         var buttonRect = new Rect(position.x + 175, position.y, 20, position.height);
 
         EditorGUI.LabelField(valueLabelRect, $"{Fix.RawToString(property.FindPropertyRelative("_x").FindPropertyRelative("raw").intValue)},{Fix.RawToString(property.FindPropertyRelative("_y").FindPropertyRelative("raw").intValue)}");

@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace TDFP.Core
 {
+    [System.Serializable]
     public class Mat22
     {
         public Fix m00, m01;
@@ -10,7 +11,7 @@ namespace TDFP.Core
 
         public Mat22()
         {
-
+            Set(0);
         }
 
         public Mat22(Fix radians)
@@ -87,9 +88,19 @@ namespace TDFP.Core
             return m;
         }
 
+        public static Fix MatrixToRadian(Mat22 m)
+        {
+            return FixMath.Atan2(m.m10, m.m00);
+        }
+
+        public static Fix MatrixToDegrees(Mat22 m)
+        {
+            return MatrixToRadian(m) * 180 / FixMath.PI;
+        }
+
         public static FixVec2 operator *(Mat22 lhs, FixVec2 rhs)
         {
-            return new FixVec2(lhs.m00*rhs.X+lhs.m01*rhs.Y, lhs.m10*rhs.X+lhs.m11*rhs.Y);
+            return new FixVec2(lhs.m00*rhs.X + lhs.m01*rhs.Y, lhs.m10*rhs.X + lhs.m11*rhs.Y);
         }
 
         public static Mat22 operator *(Mat22 lhs, Mat22 rhs)

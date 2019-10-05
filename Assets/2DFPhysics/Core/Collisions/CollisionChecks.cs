@@ -19,6 +19,7 @@ namespace TDFP.Core
 
             // Exit with no intersection if found separated along an axis
             if (aCol.boundingBox.max._x < bCol.boundingBox.min._x || aCol.boundingBox.min._x > bCol.boundingBox.max._x) return false;
+
             if (aCol.boundingBox.max._y < bCol.boundingBox.min._y || aCol.boundingBox.min._y > bCol.boundingBox.max._y) return false;
 
             // No separating axis found, therefor there is at least one overlapping axis

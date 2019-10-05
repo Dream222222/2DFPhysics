@@ -347,5 +347,15 @@ namespace FixedPointy {
 
 			return new Fix((int)y);
 		}
+
+        public static Fix RadianToDegrees(Fix r)
+        {
+            return r * 180 / FixMath.PI;
+        }
+
+        public static Fix DegreesToRadians(Fix d)
+        {
+            return d * FixMath.PI / 180;
+        }
 	}
 }

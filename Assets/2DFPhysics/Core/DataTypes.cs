@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using FixedPointy;
+using Unity.Collections;
 
 namespace TDFP.Core
 {
@@ -9,12 +10,10 @@ namespace TDFP.Core
     public struct FPRInfo
     {
         public FixVec2 position;
-        public Fix rotation;
+        public Fix rotation; // In radians
         public FixVec2 velocity;
         public Fix angularVelocity;
         public FixVec2 force;
         public Fix torque;
-        public Fix staticFriction;
-        public Fix dynamicFriction;
     }
 }

@@ -13,7 +13,7 @@ namespace TDFP.Colliders
         public AABB boundingBox;
         public bool isTrigger;
         public FixVec2 offset;
-        public Mat22 u = new Mat22();
+        public Mat22 u = new Mat22(0);
 
         protected virtual void Awake()
         {

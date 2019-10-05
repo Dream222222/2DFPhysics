@@ -20,8 +20,8 @@ namespace TDFP.Colliders
 
         protected override void Awake()
         {
-            base.Awake();
             CalculateNormals();
+            base.Awake();
         }
 
         public override void UpdateAABB(FixVec2 posDiff)
@@ -34,23 +34,52 @@ namespace TDFP.Colliders
 
         public override void RecalcAABB(FixVec2 pos)
         {
+            /*
             for (int i = 0; i < vertices.Count; i++)
             {
-                if (vertices[i].X < boundingBox.min.X)
+                if (vertices[i].X + pos._x < boundingBox.min.X)
                 {
-                    boundingBox.min._x = vertices[i].X;
+                    boundingBox.min._x = vertices[i].X + pos._x;
                 }
-                if (vertices[i].Y < boundingBox.min.Y)
+                if (vertices[i].Y + pos._y < boundingBox.min.Y)
                 {
-                    boundingBox.min._y = vertices[i].Y;
+                    boundingBox.min._y = vertices[i].Y + pos._y;
                 }
-                if (vertices[i].X > boundingBox.max.X)
+                if (vertices[i].X + pos._x > boundingBox.max.X)
                 {
-                    boundingBox.max._x = vertices[i].X;
+                    boundingBox.max._x = vertices[i].X + pos._x;
                 }
-                if (vertices[i].Y > boundingBox.max.Y)
+                if (vertices[i].Y + pos._y > boundingBox.max.Y)
                 {
-                    boundingBox.max._y = vertices[i].Y;
+                    boundingBox.max._y = vertices[i].Y + pos._y;
+                }
+            }*/
+            SetAABB(pos);
+        }
+
+        public void SetAABB(FixVec2 pos)
+        {
+            boundingBox.min._x = pos.X;
+            boundingBox.max._x = pos.X;
+            boundingBox.min._y = pos.Y;
+            boundingBox.max._y = pos.Y;
+            for (int i = 0; i < vertices.Count; i++)
+            {
+                if (vertices[i].X + pos._x < boundingBox.min.X)
+                {
+                    boundingBox.min._x = vertices[i].X+pos._x;
+                }
+                if (vertices[i].Y + pos._y < boundingBox.min.Y)
+                {
+                    boundingBox.min._y = vertices[i].Y+pos._y;
+                }
+                if (vertices[i].X + pos._x > boundingBox.max.X)
+                {
+                    boundingBox.max._x = vertices[i].X+pos._x;
+                }
+                if (vertices[i].Y + pos._y > boundingBox.max.Y)
+                {
+                    boundingBox.max._y = vertices[i].Y+pos._y;
                 }
             }
         }

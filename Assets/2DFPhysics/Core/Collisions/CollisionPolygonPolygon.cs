@@ -195,7 +195,7 @@ namespace TDFP.Core
 
                 // Retrieve vertex on face from A, transform into
                 FixVec2 v = A.vertices[i];
-                v = A.u * v + A.body.info.position;
+                v = A.u * v + A.body.Position;
                 v -= B.body.info.position;
                 v = buT * v;
 

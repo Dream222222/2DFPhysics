@@ -6,6 +6,7 @@ using System;
 
 namespace TDFP.Core
 {
+    [System.Serializable]
     public class Manifold
     {
         public FPRigidbody A;
@@ -38,8 +39,8 @@ namespace TDFP.Core
             e = FixMath.Min(A.material.bounciness, B.material.bounciness);
 
             // Calculate static & dynamic friction
-            sf = FixMath.Sqrt(A.info.staticFriction * A.info.staticFriction + B.info.staticFriction * B.info.staticFriction);
-            df = FixMath.Sqrt(A.info.dynamicFriction * A.info.dynamicFriction + B.info.dynamicFriction * B.info.dynamicFriction);
+            sf = FixMath.Sqrt(A.staticFriction * A.staticFriction + B.staticFriction * B.staticFriction);
+            df = FixMath.Sqrt(A.dynamicFriction * A.dynamicFriction + B.dynamicFriction * B.dynamicFriction);
 
             for(int i = 0; i < contactCount; i++)
             {
@@ -73,8 +74,8 @@ namespace TDFP.Core
             for(int i = 0; i < contactCount; ++i)
             {
                 // Calculate radii from COM to contact
-                FixVec2 ra = contacts[i] - A.info.position;
-                FixVec2 rb = contacts[i] - B.info.position;
+                FixVec2 ra = contacts[i] - A.Position;
+                FixVec2 rb = contacts[i] - B.Position;
 
                 //Relative velocity
                 FixVec2 rv = B.info.velocity + FixVec2.Cross(B.info.angularVelocity, rb) - A.info.velocity - FixVec2.Cross(A.info.angularVelocity, ra);
@@ -116,11 +117,12 @@ namespace TDFP.Core
                 jt /= contactCount;
 
                 //Don't apply tiny friction impulses
-                if(FixMath.Abs(jt) <= TDFPhysics.instance.settings.minimumFrictionImpulse)
+                if(FixMath.Abs(jt) <= Fix.Zero)
                 {
                     return;
                 }
 
+                // Coulumb's law
                 FixVec2 tangentImpulse;
                 if (FixMath.Abs(jt) < j * sf)
                 {
@@ -140,10 +142,11 @@ namespace TDFP.Core
         public void PositionalCorrection()
         {
             TDFPhysics settings = TDFPhysics.instance;
-            Fix correction = FixMath.Max(settings.penetrationAllowance, 0) / (A.invMass + B.invMass) * settings.penetrationCorrection;
+            FixVec2 correction = (FixMath.Max(penetration - settings.penetrationAllowance, Fix.Zero)) / (A.invMass + B.invMass) 
+                * normal * settings.penetrationCorrection;
 
-            A.Position -= correction * normal * A.invMass;
-            B.Position += correction * normal * B.invMass;
+            A.Position -= correction * A.invMass;
+            B.Position += correction * B.invMass;
         }
 
         private void InfiniteMassCorrection()

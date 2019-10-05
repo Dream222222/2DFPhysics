@@ -19,11 +19,11 @@ MonoBehaviour:
     _x:
       raw: 0
     _y:
-      raw: 0
+      raw: -131072
   minimumFrictionImpulse:
     raw: 655
   biasRelative:
     raw: 62259
   biasAbsolute:
     raw: 655
-  solveCollisionIterations: 1
+  solveCollisionIterations: 3

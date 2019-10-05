@@ -13,7 +13,7 @@ namespace TDFP.Core
             TFPCircleCollider B = (TFPCircleCollider)b.coll;
 
             //Calculate translational vector, which is normal
-            FixVec2 normal = ((FixVec2)b.fpTransform.Position) - ((FixVec2)a.fpTransform.Position);
+            FixVec2 normal = ((FixVec2)b.Position) - ((FixVec2)a.Position);
 
             Fix distSpr = normal.GetMagnitudeSquared();
             Fix radius = A.radius + B.radius;
@@ -33,13 +33,13 @@ namespace TDFP.Core
             {
                 m.penetration = A.radius;
                 m.normal = new FixVec2(1, 0);
-                m.contacts[0] = (FixVec2)a.fpTransform.Position;
+                m.contacts[0] = (FixVec2)a.Position;
             }
             else
             {
                 m.penetration = radius - distance;
                 m.normal = normal / distance;
-                m.contacts[0] = m.normal * A.radius + ((FixVec2)a.fpTransform.Position);
+                m.contacts[0] = m.normal * A.radius + ((FixVec2)a.Position);
             }
         }
     }
