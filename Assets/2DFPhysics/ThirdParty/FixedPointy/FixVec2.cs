@@ -141,11 +141,13 @@ namespace FixedPointy {
 
 		public void Normalize () {
             if (_x == 0 && _y == 0)
+            {
                 return;
+            }
 
-			var m = GetMagnitude();
-            _x /= m;
-            _y /= m;
+			Fix m = GetMagnitude();
+            _x = _x / m;
+            _y = _y / m;
 		}
 
         public FixVec2 Normalized()

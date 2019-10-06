@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dcb67c07a5922f48a5299bf44f99e09, type: 3}
   m_Name: TDFPhysicsMaterial
   m_EditorClassIdentifier: 
+  friction:
+    raw: 858993459
   bounciness:
     raw: 0
-  friction:
-    raw: 1717986918

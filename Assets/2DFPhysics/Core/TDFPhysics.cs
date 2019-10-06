@@ -85,6 +85,7 @@ namespace TDFP.Core
                 }
             }
             CullDups();
+            SortPairs();
         }
 
         private void CullDups()
@@ -105,6 +106,12 @@ namespace TDFP.Core
                     }
                 }
             }
+        }
+
+        ManifoldComparer mc = new ManifoldComparer();
+        private void SortPairs()
+        {
+            broadPhasePairs.Sort(mc);
         }
         #endregion
 

@@ -109,7 +109,7 @@ namespace TDFP.Core
                     - A.info.velocity - FixVec2.Cross(A.info.angularVelocity, ra);
 
                 FixVec2 t = rv - (normal * FixVec2.Dot(rv, normal));
-                t.Normalize();
+                t = t.Normalized();
 
                 // j tangent magnitude
                 Fix jt = -FixVec2.Dot(rv, t);

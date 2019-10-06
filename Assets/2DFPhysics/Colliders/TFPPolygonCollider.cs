@@ -20,8 +20,8 @@ namespace TDFP.Colliders
 
         protected override void Awake()
         {
-            CalculateNormals();
             base.Awake();
+            CalculateNormals();
         }
 
         public override void UpdateAABB(FixVec2 posDiff)
@@ -186,7 +186,7 @@ namespace TDFP.Colliders
 
                 // Calculate normal with 2D cross product between vector and scalar
                 normals[i] = new FixVec2(face.Y, -face.X);
-                normals[i].Normalize();
+                normals[i] = normals[i].Normalized();
             }
         }
 
@@ -220,6 +220,7 @@ namespace TDFP.Colliders
             {
                 Handles.DrawLine((Vector3)(tdTransform.Position+vertices[i]), (Vector3)(tdTransform.Position+vertices[i+1]));
             }
+            Handles.DrawLine((Vector3)(tdTransform.Position + vertices[vertices.Count-1]), (Vector3)(tdTransform.Position + vertices[0]));
         }
 #endif
     }

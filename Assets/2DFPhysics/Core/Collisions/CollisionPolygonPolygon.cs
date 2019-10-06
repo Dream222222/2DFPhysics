@@ -66,7 +66,7 @@ namespace TDFP.Core
 
             //Calculate reference face side normal in world space
             FixVec2 sidePlaneNormal = v2 - v1;
-            sidePlaneNormal.Normalize();
+            sidePlaneNormal = sidePlaneNormal.Normalized();
 
             // Orthogonalize
             FixVec2 refFaceNormal = new FixVec2(sidePlaneNormal.Y, -sidePlaneNormal.X);

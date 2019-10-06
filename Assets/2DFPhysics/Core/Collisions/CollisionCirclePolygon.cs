@@ -69,7 +69,7 @@ namespace TDFP.Core
                 m.contactCount = 1;
                 FixVec2 n = v1 - center;
                 n = B.u * n;
-                n.Normalize();
+                n = n.Normalized();
                 m.normal = n;
                 v1 = B.u * v1 + b.Position;
                 m.contacts[0] = v1;
@@ -87,7 +87,7 @@ namespace TDFP.Core
                 v2 = B.u * v2 + b.Position;
                 m.contacts[0] = v2;
                 n = B.u * n;
-                n.Normalize();
+                n = n.Normalized();
                 m.normal = n;
             }
             else
