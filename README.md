@@ -1,6 +1,7 @@
 # 2DFPhysics
  2D fixed-point physics for Unity. This is currently a WIP project, any help is appriciated.    
- This project is currently based on Randy Gaul's [Custom 2D Physics Engine tutorial](https://gamedevelopment.tutsplus.com/tutorials/how-to-create-a-custom-2d-physics-engine-the-basics-and-impulse-resolution--gamedev-6331).
+ This project is currently based on Randy Gaul's [Custom 2D Physics Engine tutorial](https://gamedevelopment.tutsplus.com/tutorials/how-to-create-a-custom-2d-physics-engine-the-basics-and-impulse-resolution--gamedev-6331).  
+ Currently built on Unity **2019.2.3f1**, but could work on lower versions.
  
 ## Goals
 1. Deterministic. Should get the same result on all platforms. 
