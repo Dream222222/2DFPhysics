@@ -33,12 +33,29 @@ namespace TDFP.Core
             }
         }
 
+        public FixVec3 Scale
+        {
+            get
+            {
+                return scale;
+            }
+            set
+            {
+                scale = value;
+                transform.localScale = (Vector3)scale;
+            }
+        }
+
         [SerializeField] private FixVec3 position;
         public FixVec3 scale;
         [HideInInspector] public Mat22 rotation;
 
         public void OnValidate()
         {
+            if (Application.isPlaying)
+            {
+                return;
+            }
             transform.position = (Vector3)position;
             transform.localScale = (Vector3)scale;
             UpdateTransformRotation();

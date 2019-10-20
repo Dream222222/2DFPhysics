@@ -18,7 +18,7 @@ namespace TDFP.Core
         public Fix e;
         public Fix sf;
         public Fix df;
-
+        
         public Manifold(FPRigidbody a, FPRigidbody b)
         {
             A = a;
@@ -39,8 +39,8 @@ namespace TDFP.Core
             e = FixMath.Min(A.material.bounciness, B.material.bounciness);
 
             // Calculate static & dynamic friction
-            sf = FixMath.Sqrt(A.staticFriction * A.staticFriction + B.staticFriction * B.staticFriction);
-            df = FixMath.Sqrt(A.dynamicFriction * A.dynamicFriction + B.dynamicFriction * B.dynamicFriction);
+            sf = FixMath.Sqrt(A.StaticFriction * A.StaticFriction + B.StaticFriction * B.StaticFriction);
+            df = FixMath.Sqrt(A.DynamicFriction * A.DynamicFriction + B.DynamicFriction * B.DynamicFriction);
 
             for(int i = 0; i < contactCount; i++)
             {

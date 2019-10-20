@@ -195,6 +195,7 @@ namespace TDFP.Colliders
             Fix bestProjection = -Fix.MaxValue;
             FixVec2 bestVertex = new FixVec2(0, 0);
 
+
             for (int i = 0; i < vertexCount; ++i)
             {
                 FixVec2 v = vertices[i];

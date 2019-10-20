@@ -17,6 +17,7 @@ namespace TDFP.Colliders
 
         protected virtual void Awake()
         {
+            tdTransform = GetComponent<TDFPTransform>();
             RecalcAABB((FixVec2)tdTransform.Position);
         }
 

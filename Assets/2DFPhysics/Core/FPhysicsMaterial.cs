@@ -8,7 +8,8 @@ namespace TDFP.Core
     [CreateAssetMenu(fileName = "TDFPhysicsMaterial", menuName = "TDFP/PhysicsMaterial", order = 1)]
     public class FPhysicsMaterial : ScriptableObject
     {
-        public FixConst friction;
+        public Fix staticFriction = (Fix).4f;
+        public Fix dynamicFriction = (Fix).2f;
         public FixConst bounciness;
     }
 }

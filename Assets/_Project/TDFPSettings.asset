@@ -27,3 +27,4 @@ MonoBehaviour:
   biasAbsolute:
     raw: 655
   solveCollisionIterations: 3
+  defaultMaterial: {fileID: 11400000, guid: ed97aaacf27b7ef44bd18d448dc1d251, type: 2}

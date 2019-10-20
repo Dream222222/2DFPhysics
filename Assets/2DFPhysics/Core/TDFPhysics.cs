@@ -53,10 +53,10 @@ namespace TDFP.Core
 
         public void UpdatePhysics(Fix dt)
         {
-            Profiler.BeginSample("Physics Update");
+            //Profiler.BeginSample("Physics Update");
             BroadPhase();
             NarrowPhase();
-            Profiler.EndSample();
+            //Profiler.EndSample();
         }
 
         #region Broad Phase

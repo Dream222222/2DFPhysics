@@ -22,11 +22,42 @@ namespace TDFP.Core
                 fpTransform.Position = value;
             }
         }
+        public Fix StaticFriction {
+            get
+            {
+                if (!material)
+                {
+                    return (Fix)0.4f;
+                }
+                return material.staticFriction;
+            }
+        }
+        public Fix DynamicFriction
+        {
+            get
+            {
+                if (!material)
+                {
+                    return (Fix)0.2f;
+                }
+                return material.dynamicFriction;
+            }
+        }
+        public Fix Bounciness
+        {
+            get
+            {
+                if (!material)
+                {
+                    return (Fix)0;
+                }
+                return material.bounciness;
+            }
+        }
+
 
         [HideInInspector] public Fix invMass;
         [HideInInspector] public Fix invInertia;
-
-        [SerializeField] protected RigidbodyType2D bodyType;
 
         #region References
         public TDFPTransform fpTransform;
@@ -34,13 +65,11 @@ namespace TDFP.Core
         public FPhysicsMaterial material;
         #endregion
 
-        public bool simulated;
-        public bool transformSmoothing;
-        [SerializeField] public Fix mass;
-        [SerializeField] public Fix inertia;
-        [SerializeField] public Fix gravityScale;
-        [SerializeField] public Fix staticFriction;
-        [SerializeField] public Fix dynamicFriction;
+        public bool simulated = true;
+        public InterpolationType interpolation;
+        [SerializeField] public Fix mass = 1;
+        [SerializeField] public Fix inertia = 0;
+        [SerializeField] public Fix gravityScale = 1;
         [ReadOnly]public FPRInfo info;
         public AABB bounds;
 
@@ -52,6 +81,8 @@ namespace TDFP.Core
                 //In edit mode, return out.
                 return;
             }
+            coll = GetComponent<TFPCollider>();
+            coll.body = this;
             info.position = (FixVec2)fpTransform.Position;
             info.velocity = new FixVec2(0, 0);
             info.angularVelocity = 0;
@@ -101,7 +132,7 @@ namespace TDFP.Core
 
         public void AddForce(FixVec2 force, ForceMode2D mode = ForceMode2D.Force)
         {
-            if(bodyType == RigidbodyType2D.Static)
+            if(mass == 0)
             {
                 return;
             }
@@ -122,11 +153,6 @@ namespace TDFP.Core
             info.angularVelocity += invInertia * FixVec2.Cross(contactVector, impulse);
         }
 
-        public void SetBodyType(RigidbodyType2D rType)
-        {
-            bodyType = rType;
-        }
-
         public virtual void SetRotation(Fix radians)
         {
             info.rotation = radians;
@@ -136,6 +162,7 @@ namespace TDFP.Core
 
         public void UpdateTransform(float alpha)
         {
+            /*
             Vector3 newPos = new Vector3((float)info.position.X, (float)info.position.Y, 0);
             if (transformSmoothing)
             {
@@ -144,7 +171,7 @@ namespace TDFP.Core
             else
             {
                 transform.position = newPos;
-            }
+            }*/
         }
     }
 }

@@ -16,4 +16,11 @@ namespace TDFP.Core
         public FixVec2 force;
         public Fix torque;
     }
+
+    [System.Serializable]
+    public enum InterpolationType {
+        None = 0,
+        Interpolate = 1,
+        Extrapolate = 2
+    }
 }

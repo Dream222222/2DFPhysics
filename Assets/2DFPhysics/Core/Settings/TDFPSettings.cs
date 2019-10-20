@@ -15,5 +15,6 @@ namespace TDFP.Core
         public Fix biasRelative = (Fix)(0.95f);
         public Fix biasAbsolute = (Fix)(0.01f);
         public int solveCollisionIterations = 1;
+        public FPhysicsMaterial defaultMaterial;
     }
 }
