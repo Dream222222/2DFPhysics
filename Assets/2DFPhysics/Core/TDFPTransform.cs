@@ -48,7 +48,7 @@ namespace TDFP.Core
 
         [SerializeField] private FixVec3 position;
         public FixVec3 scale;
-        [HideInInspector] public Mat22 rotation;
+        [HideInInspector]public Mat22 rotation;
 
         public void OnValidate()
         {
@@ -58,12 +58,6 @@ namespace TDFP.Core
             }
             transform.position = (Vector3)position;
             transform.localScale = (Vector3)scale;
-            UpdateTransformRotation();
-        }
-
-        public void SetRotationRadians(Fix radians)
-        {
-            rotation = new Mat22(radians);
             UpdateTransformRotation();
         }
 

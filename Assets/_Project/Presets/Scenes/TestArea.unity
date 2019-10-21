@@ -1092,7 +1092,7 @@ MonoBehaviour:
       _y:
         raw: 65536
     rotation:
-      raw: 0
+      raw: 2949120
     velocity:
       _x:
         raw: 0
@@ -1135,13 +1135,13 @@ MonoBehaviour:
       raw: 65536
   rotation:
     m00:
-      raw: 65536
+      raw: 46341
     m01:
-      raw: 0
+      raw: -46341
     m10:
-      raw: 0
+      raw: 46341
     m11:
-      raw: 65536
+      raw: 46341
 --- !u!4 &779573192
 Transform:
   m_ObjectHideFlags: 0
@@ -1149,14 +1149,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 779573188}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0.38268346, w: 0.9238795}
   m_LocalPosition: {x: -1.7999878, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1544857467}
   m_Father: {fileID: 0}
   m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 45}
 --- !u!1 &954511702
 GameObject:
   m_ObjectHideFlags: 0

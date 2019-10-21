@@ -10,7 +10,7 @@ namespace TDFP.Core
     public struct FPRInfo
     {
         public FixVec2 position;
-        public Fix rotation; // In radians
+        public Fix rotation; // In degrees
         public FixVec2 velocity;
         public Fix angularVelocity;
         public FixVec2 force;

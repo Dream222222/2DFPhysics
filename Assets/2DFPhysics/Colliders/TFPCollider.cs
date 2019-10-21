@@ -31,9 +31,9 @@ namespace TDFP.Colliders
 
         }
 
-        public virtual void SetRotation(Fix radians)
+        public virtual void SetRotation(Fix degrees)
         {
-            u.Set(radians);
+            u.Set(degrees);
         }
 
         public virtual TFPColliderType GetCType()

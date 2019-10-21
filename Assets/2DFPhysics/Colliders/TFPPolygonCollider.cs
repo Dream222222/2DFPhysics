@@ -192,15 +192,17 @@ namespace TDFP.Colliders
 #if UNITY_EDITOR
         void OnDrawGizmosSelected()
         {
-            FixVec3 pos = tdTransform.Position;
-            pos._z = 0;
+            FixVec2 pos = (FixVec2)tdTransform.Position;
             // Draw a yellow sphere at the transform's position
             UnityEditor.Handles.color = Color.yellow;
             for(int i = 0; i < vertices.Count-1; i++)
             {
-                Handles.DrawLine((Vector3)(pos+vertices[i]), (Vector3)(pos+vertices[i+1]));
+                Handles.DrawLine((Vector3)((pos + (tdTransform.rotation * vertices[i]))), 
+                    (Vector3)((pos + (tdTransform.rotation * vertices[i+1]))) );
             }
-            Handles.DrawLine((Vector3)(pos + vertices[vertices.Count-1]), (Vector3)(pos + vertices[0]));
+            Handles.DrawLine((Vector3)((pos + (tdTransform.rotation * vertices[vertices.Count-1]) )), 
+                (Vector3)((pos + (tdTransform.rotation * vertices[0]))) );
+
         }
 #endif
     }

@@ -24,7 +24,7 @@ namespace TDFP.Core.Editor
             rotVal = EditorGUILayout.FloatField(rotVal, GUILayout.Width(50));
             if (GUILayout.Button("A", GUILayout.Width(25)))
             {
-                t.rotation = new Mat22(FixMath.DegreesToRadians((Fix)rotVal));
+                t.rotation = new Mat22((Fix)rotVal);
                 t.OnValidate();
             }
             EditorGUILayout.EndHorizontal();

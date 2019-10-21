@@ -14,9 +14,9 @@ namespace TDFP.Core
             Set(0);
         }
 
-        public Mat22(Fix radians)
+        public Mat22(Fix degrees)
         {
-            Set(radians);
+            Set(degrees);
         }
 
         public Mat22(Fix a, Fix b, Fix c, Fix d)
@@ -24,10 +24,10 @@ namespace TDFP.Core
             Set(a, b, c, d);
         }
 
-        public void Set(Fix radians)
+        public void Set(Fix degrees)
         {
-            Fix c = FixMath.Cos(radians);
-            Fix s = FixMath.Sin(radians);
+            Fix c = FixMath.Cos(degrees);
+            Fix s = FixMath.Sin(degrees);
 
             m00 = c;
             m01 = -s;
@@ -88,19 +88,14 @@ namespace TDFP.Core
             return m;
         }
 
-        public static Fix MatrixToRadian(Mat22 m)
+        public static Fix MatrixToDegrees(Mat22 m)
         {
             return FixMath.Atan2(m.m10, m.m00);
         }
 
-        public static Fix MatrixToDegrees(Mat22 m)
-        {
-            return MatrixToRadian(m) * 180 / FixMath.PI;
-        }
-
         public static FixVec2 operator *(Mat22 lhs, FixVec2 rhs)
         {
-            return new FixVec2(lhs.m00*rhs.X + lhs.m01*rhs.Y, lhs.m10*rhs.X + lhs.m11*rhs.Y);
+            return new FixVec2((lhs.m00*rhs.X) + (lhs.m01*rhs.Y), (lhs.m10*rhs.X) + (lhs.m11*rhs.Y));
         }
 
         public static Mat22 operator *(Mat22 lhs, Mat22 rhs)
@@ -111,6 +106,11 @@ namespace TDFP.Core
             m.m10 = lhs.m10 * rhs.m00 + lhs.m11 * rhs.m10;
             m.m11 = lhs.m10 * rhs.m01 + lhs.m11 * rhs.m11;
             return m;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("({0}, {1}), ({2}, {3})", m00, m01, m10, m11);
         }
     }
 }

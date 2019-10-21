@@ -128,7 +128,7 @@ namespace TDFP.Core
                 if (transform.hasChanged)
                 {
                     info.position = (FixVec2)fpTransform.Position;
-                    info.rotation = Mat22.MatrixToRadian(fpTransform.rotation);
+                    info.rotation = Mat22.MatrixToDegrees(fpTransform.rotation);
                 }
             }
         }
@@ -175,10 +175,10 @@ namespace TDFP.Core
             info.angularVelocity += invInertia * FixVec2.Cross(contactVector, impulse);
         }
 
-        public virtual void SetRotation(Fix radians)
+        public virtual void SetRotation(Fix degrees)
         {
-            info.rotation = radians;
-            coll.SetRotation(radians);
+            info.rotation = degrees;
+            coll.SetRotation(degrees);
             fpTransform.Rotation = coll.u;
         }
 
