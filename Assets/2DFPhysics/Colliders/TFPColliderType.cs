@@ -4,5 +4,6 @@ using UnityEngine;
 
 public enum TFPColliderType
 {
-    Circle, Polygon
+    Circle = 0, 
+    Polygon = 1
 }

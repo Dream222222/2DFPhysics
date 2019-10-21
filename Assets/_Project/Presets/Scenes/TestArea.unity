@@ -1015,13 +1015,13 @@ MonoBehaviour:
       raw: 0
   u:
     m00:
-      raw: 65536
+      raw: 46341
     m01:
-      raw: 0
+      raw: -46341
     m10:
-      raw: 0
+      raw: 46341
     m11:
-      raw: 65536
+      raw: 46341
   vertices:
   - _x:
       raw: -65536
@@ -1088,7 +1088,7 @@ MonoBehaviour:
   info:
     position:
       _x:
-        raw: -117964
+        raw: -65536
       _y:
         raw: 65536
     rotation:
@@ -1121,7 +1121,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   position:
     _x:
-      raw: -117964
+      raw: -65536
     _y:
       raw: 65536
     _z:
@@ -1150,7 +1150,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 779573188}
   m_LocalRotation: {x: 0, y: 0, z: 0.38268346, w: 0.9238795}
-  m_LocalPosition: {x: -1.7999878, y: 1, z: 0}
+  m_LocalPosition: {x: -1, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1544857467}

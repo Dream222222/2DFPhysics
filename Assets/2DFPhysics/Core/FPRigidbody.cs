@@ -129,6 +129,8 @@ namespace TDFP.Core
                 {
                     info.position = (FixVec2)fpTransform.Position;
                     info.rotation = Mat22.MatrixToDegrees(fpTransform.rotation);
+                    SetRotation(info.rotation);
+                    RecalcAABB();
                 }
             }
         }
@@ -136,11 +138,11 @@ namespace TDFP.Core
         // Update our AABB with the difference in position.
         public void UpdateBounds(FixVec2 diff)
         {
-            coll.UpdateAABB(diff);
+            coll.MoveAABB(diff);
             bounds = coll.boundingBox;
         }
 
-        // Recalculate our AABB. This happens mainly whenever we rotate.
+        // Recalculate our AABB. This has to happen whenever we rotate.
         public void RecalcAABB()
         {
             coll.RecalcAABB(info.position);
@@ -180,20 +182,6 @@ namespace TDFP.Core
             info.rotation = degrees;
             coll.SetRotation(degrees);
             fpTransform.Rotation = coll.u;
-        }
-
-        public void UpdateTransform(float alpha)
-        {
-            /*
-            Vector3 newPos = new Vector3((float)info.position.X, (float)info.position.Y, 0);
-            if (transformSmoothing)
-            {
-                transform.position = (transform.position * alpha) + (newPos * (1.0f - alpha));
-            }
-            else
-            {
-                transform.position = newPos;
-            }*/
         }
 
         public void HandlePhysicsEvents()

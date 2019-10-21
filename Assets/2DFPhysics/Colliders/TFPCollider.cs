@@ -21,7 +21,7 @@ namespace TDFP.Colliders
             RecalcAABB((FixVec2)tdTransform.Position);
         }
 
-        public virtual void UpdateAABB(FixVec2 pos)
+        public virtual void MoveAABB(FixVec2 posDiff)
         {
 
         }

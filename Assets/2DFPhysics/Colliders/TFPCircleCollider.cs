@@ -14,7 +14,8 @@ namespace TDFP.Colliders
     {
         public Fix radius;
 
-        public override void UpdateAABB(FixVec2 posDiff)
+        // Used when we only change position.
+        public override void MoveAABB(FixVec2 posDiff)
         {
             boundingBox.min._x += posDiff.X;
             boundingBox.min._y += posDiff.Y;
@@ -22,6 +23,7 @@ namespace TDFP.Colliders
             boundingBox.max._y += posDiff.Y;
         }
 
+        // Used when we rotate or radius is changed.
         public override void RecalcAABB(FixVec2 pos)
         {
             boundingBox.min._x = -radius + pos.X;

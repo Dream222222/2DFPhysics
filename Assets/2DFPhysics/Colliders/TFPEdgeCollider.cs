@@ -9,7 +9,7 @@ using UnityEditor;
 
 namespace TDFP.Colliders
 {
-    public class TFPPolygonCollider : TFPCollider
+    public class TFPEdgeCollider : TFPCollider
     {
         public static readonly int MAX_POLY_VERTEX_COUNT = 64;
 
@@ -70,19 +70,19 @@ namespace TDFP.Colliders
             // Find the right most point on the hull
             int rightMost = 0;
             Fix highestXCoord = verts[0].X;
-            for(int i = 1; i < verts.Count; ++i)
+            for (int i = 1; i < verts.Count; ++i)
             {
                 Fix x = verts[i].X;
 
-                if(x > highestXCoord)
+                if (x > highestXCoord)
                 {
                     highestXCoord = x;
                     rightMost = i;
                 }
                 // If matching x then take farthest negative y
-                else if(x == highestXCoord)
+                else if (x == highestXCoord)
                 {
-                    if(verts[i].Y < verts[rightMost].Y)
+                    if (verts[i].Y < verts[rightMost].Y)
                     {
                         rightMost = i;
                     }
@@ -193,17 +193,14 @@ namespace TDFP.Colliders
             FixVec2 pos = (FixVec2)tdTransform.Position;
             // Draw a yellow sphere at the transform's position
             UnityEditor.Handles.color = Color.yellow;
-            for(int i = 0; i < vertices.Count-1; i++)
+            for (int i = 0; i < vertices.Count - 1; i++)
             {
-                Handles.DrawLine((Vector3)((pos + (tdTransform.rotation * vertices[i]))), 
-                    (Vector3)((pos + (tdTransform.rotation * vertices[i+1]))) );
+                Handles.DrawLine((Vector3)((pos + (tdTransform.rotation * vertices[i]))),
+                    (Vector3)((pos + (tdTransform.rotation * vertices[i + 1]))));
             }
-            Handles.DrawLine((Vector3)((pos + (tdTransform.rotation * vertices[vertices.Count-1]) )), 
-                (Vector3)((pos + (tdTransform.rotation * vertices[0]))) );
+            Handles.DrawLine((Vector3)((pos + (tdTransform.rotation * vertices[vertices.Count - 1]))),
+                (Vector3)((pos + (tdTransform.rotation * vertices[0]))));
 
-
-            UnityEditor.Handles.color = Color.white;
-            Handles.DrawLine((Vector3)(boundingBox.min), (Vector3)(boundingBox.max));
         }
 #endif
     }
