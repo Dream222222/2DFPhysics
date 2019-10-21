@@ -52,10 +52,8 @@ namespace TDFP.Core
 
         public void UpdatePhysics(Fix dt)
         {
-            //Profiler.BeginSample("Physics Update");
             BroadPhase();
             NarrowPhase();
-            //Profiler.EndSample();
         }
 
         #region Broad Phase
@@ -64,14 +62,20 @@ namespace TDFP.Core
             broadPhasePairs.Clear();
             for (int i = 0; i < bodies.Count; i++)
             {
-                for (int w = 0; w < bodies.Count; w++)
+                //Body isn't in the simulation, ignore it.
+                if (!bodies[i].simulated)
                 {
-                    //If it's the same body, ignore it.
-                    if (bodies[i] == bodies[w])
+                    continue;
+                }
+                for (int w = i+1; w < bodies.Count; w++)
+                {
+                    //Body isn't in the simulation, ignore it.
+                    if(!bodies[w].simulated)
                     {
                         continue;
                     }
 
+                    //If both bodies are static, ignore them.
                     if (bodies[i].invMass == 0 && bodies[w].invMass == 0)
                     {
                         continue;
@@ -83,34 +87,6 @@ namespace TDFP.Core
                     }
                 }
             }
-            CullDups();
-            SortPairs();
-        }
-
-        private void CullDups()
-        {
-            for(int i = 0; i < broadPhasePairs.Count; i++)
-            {
-                for(int w = 0; w < broadPhasePairs.Count; w++)
-                {
-                    if(i == w)
-                    {
-                        continue;
-                    }
-
-                    if(broadPhasePairs[i].A == broadPhasePairs[w].A && broadPhasePairs[i].B == broadPhasePairs[w].B
-                        || broadPhasePairs[i].A == broadPhasePairs[w].B && broadPhasePairs[i].B == broadPhasePairs[w].A)
-                    {
-                        broadPhasePairs.RemoveAt(w);
-                    }
-                }
-            }
-        }
-
-        ManifoldComparer mc = new ManifoldComparer();
-        private void SortPairs()
-        {
-            broadPhasePairs.Sort(mc);
         }
         #endregion
 
@@ -139,6 +115,11 @@ namespace TDFP.Core
             // Integrate forces
             for (int i = 0; i < bodies.Count; ++i)
             {
+                //If the body is static, ignore it.
+                if (bodies[i].invMass == Fix.Zero)
+                {
+                    return;
+                }
                 IntegrateForces(bodies[i], settings.deltaTime);
             }
 
@@ -160,6 +141,11 @@ namespace TDFP.Core
             // Integrate velocities
             for (int i = 0; i < bodies.Count; ++i)
             {
+                //If the body is static, ignore it.
+                if (bodies[i].invMass == Fix.Zero)
+                {
+                    return;
+                }
                 IntegrateVelocity(bodies[i], settings.deltaTime);
             }
 
@@ -182,11 +168,6 @@ namespace TDFP.Core
 
         private void IntegrateVelocity(FPRigidbody b, Fix dt)
         {
-            if (b.invMass == Fix.Zero)
-            {
-                return;
-            }
-
             b.Position += b.info.velocity * dt;
             b.info.rotation += b.info.angularVelocity * dt;
             b.SetRotation(b.info.rotation);
@@ -195,9 +176,6 @@ namespace TDFP.Core
 
         private void IntegrateForces(FPRigidbody b, Fix dt)
         {
-            if (b.invMass == Fix.Zero)
-                return;
-
             b.info.velocity += ((b.info.force * b.invMass) + (settings.gravity * b.gravityScale)) * (dt / (Fix.One+Fix.One));
             b.info.angularVelocity += b.info.torque * b.invInertia * (dt / (Fix.One+Fix.One));
         }
