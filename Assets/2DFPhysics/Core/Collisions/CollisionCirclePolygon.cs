@@ -22,7 +22,7 @@ namespace TDFP.Core
             // Exact concept as using support points in Polygon vs Polygon
             Fix separation = -Fix.MaxValue;
             int faceNormal = 0;
-            for(int i = 0; i < B.vertexCount; ++i)
+            for(int i = 0; i < B.vertices.Count; ++i)
             {
                 Fix s = FixVec2.Dot(B.normals[i], center - B.vertices[i]);
 
@@ -40,7 +40,7 @@ namespace TDFP.Core
 
             // Grab face's vertices
             FixVec2 v1 = B.vertices[faceNormal];
-            int i2 = (faceNormal + 1) < B.vertexCount ? faceNormal + 1 : 0;
+            int i2 = (faceNormal + 1) < B.vertices.Count ? faceNormal + 1 : 0;
             FixVec2 v2 = B.vertices[i2];
 
             // Check to see if center is within polygon

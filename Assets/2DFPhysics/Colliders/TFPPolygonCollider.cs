@@ -14,9 +14,8 @@ namespace TDFP.Colliders
     {
         public static readonly int MAX_POLY_VERTEX_COUNT = 64;
 
-        public int vertexCount;
         public List<FixVec2> vertices = new List<FixVec2>();
-        public List<FixVec2> normals = new List<FixVec2>();
+        [HideInInspector] public List<FixVec2> normals = new List<FixVec2>();
 
         protected override void Awake()
         {
@@ -162,14 +161,13 @@ namespace TDFP.Colliders
                 // Conclude algorithm upon wrap-around
                 if (nextHullIndex == rightMost)
                 {
-                    vertexCount = outCount;
                     break;
                 }
             }
 
 
             // Copy vertices into shape's vertices
-            for (int i = 0; i < vertexCount; ++i)
+            for (int i = 0; i < vertices.Count; ++i)
             {
                 vertices[i] = verts[hull[i]];
             }
@@ -180,9 +178,9 @@ namespace TDFP.Colliders
         public void CalculateNormals()
         {
             // Compute face normals
-            for (int i = 0; i < vertexCount; ++i)
+            for (int i = 0; i < vertices.Count; ++i)
             {
-                FixVec2 face = vertices[(i + 1) % vertexCount] - vertices[i];
+                FixVec2 face = vertices[(i + 1) % vertices.Count] - vertices[i];
 
                 // Calculate normal with 2D cross product between vector and scalar
                 normals[i] = new FixVec2(face.Y, -face.X);
@@ -196,7 +194,7 @@ namespace TDFP.Colliders
             FixVec2 bestVertex = new FixVec2(0, 0);
 
 
-            for (int i = 0; i < vertexCount; ++i)
+            for (int i = 0; i < vertices.Count; ++i)
             {
                 FixVec2 v = vertices[i];
                 Fix projection = FixVec2.Dot(v, dir);
@@ -215,13 +213,15 @@ namespace TDFP.Colliders
 #if UNITY_EDITOR
         void OnDrawGizmosSelected()
         {
+            FixVec3 pos = tdTransform.Position;
+            pos._z = 0;
             // Draw a yellow sphere at the transform's position
             UnityEditor.Handles.color = Color.yellow;
             for(int i = 0; i < vertices.Count-1; i++)
             {
-                Handles.DrawLine((Vector3)(tdTransform.Position+vertices[i]), (Vector3)(tdTransform.Position+vertices[i+1]));
+                Handles.DrawLine((Vector3)(pos+vertices[i]), (Vector3)(pos+vertices[i+1]));
             }
-            Handles.DrawLine((Vector3)(tdTransform.Position + vertices[vertices.Count-1]), (Vector3)(tdTransform.Position + vertices[0]));
+            Handles.DrawLine((Vector3)(pos + vertices[vertices.Count-1]), (Vector3)(pos + vertices[0]));
         }
 #endif
     }

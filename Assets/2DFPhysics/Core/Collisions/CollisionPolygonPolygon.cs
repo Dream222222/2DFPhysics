@@ -57,7 +57,7 @@ namespace TDFP.Core
 
             // Setup reference face certices
             FixVec2 v1 = refPoly.vertices[referenceIndex];
-            referenceIndex = referenceIndex + 1 == refPoly.vertexCount ? 0 : referenceIndex + 1;
+            referenceIndex = referenceIndex + 1 == refPoly.vertices.Count ? 0 : referenceIndex + 1;
             FixVec2 v2 = refPoly.vertices[referenceIndex];
 
             // Transform vertices to world space
@@ -159,7 +159,7 @@ namespace TDFP.Core
             // Find most anti-normal face on incident polygon
             int incidentFace = 0;
             Fix minDot = Fix.MaxValue;
-            for (int i = 0; i < incPoly.vertexCount; ++i)
+            for (int i = 0; i < incPoly.vertices.Count; ++i)
             {
                 Fix dot = FixVec2.Dot(referenceNormal, incPoly.normals[i]);
                 if (dot < minDot)
@@ -171,7 +171,7 @@ namespace TDFP.Core
 
             // Assign face vertices for incidentFace
             v[0] = incPoly.u * incPoly.vertices[incidentFace] + incPoly.body.info.position;
-            incidentFace = incidentFace + 1 >= (int)incPoly.vertexCount ? 0 : incidentFace + 1;
+            incidentFace = incidentFace + 1 >= (int)incPoly.vertices.Count ? 0 : incidentFace + 1;
             v[1] = incPoly.u * incPoly.vertices[incidentFace] + incPoly.body.info.position;
         }
 
@@ -180,7 +180,7 @@ namespace TDFP.Core
             Fix bestDistance = -Fix.MaxValue;
             int bestIndex = 0;
 
-            for (int i = 0; i < A.vertexCount; ++i)
+            for (int i = 0; i < A.vertices.Count; ++i)
             {
                 // Retrieve a face normal from A
                 FixVec2 nw = A.u * A.normals[i];
