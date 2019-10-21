@@ -201,7 +201,7 @@ namespace TDFP.Colliders
             Handles.DrawLine((Vector3)((pos + (tdTransform.rotation * vertices[vertices.Count-1]) )), 
                 (Vector3)((pos + (tdTransform.rotation * vertices[0]))) );
 
-
+            //Draw bounding box.
             UnityEditor.Handles.color = Color.white;
             Handles.DrawLine((Vector3)(boundingBox.min), (Vector3)(boundingBox.max));
         }

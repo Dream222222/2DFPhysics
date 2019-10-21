@@ -14,7 +14,7 @@ namespace TDFP.Colliders
         public static readonly int MAX_POLY_VERTEX_COUNT = 64;
 
         public List<FixVec2> vertices = new List<FixVec2>();
-        [HideInInspector] public List<FixVec2> normals = new List<FixVec2>();
+        public List<FixVec2> normals = new List<FixVec2>();
 
         protected override void Awake()
         {
@@ -62,7 +62,7 @@ namespace TDFP.Colliders
 
         public override TFPColliderType GetCType()
         {
-            return TFPColliderType.Polygon;
+            return TFPColliderType.Edge;
         }
 
         public void SetVertices(List<FixVec2> verts)
@@ -148,20 +148,18 @@ namespace TDFP.Colliders
             {
                 vertices[i] = verts[hull[i]];
             }
-
             CalculateNormals();
         }
 
         public void CalculateNormals()
         {
+            normals = new List<FixVec2>();
             // Compute face normals
-            for (int i = 0; i < vertices.Count; ++i)
+            for (int i = 0; i < vertices.Count-1; i++)
             {
-                FixVec2 face = vertices[(i + 1) % vertices.Count] - vertices[i];
-
-                // Calculate normal with 2D cross product between vector and scalar
-                normals[i] = new FixVec2(face.Y, -face.X);
-                normals[i] = normals[i].Normalized();
+                normals.Add(new FixVec2());
+                FixVec2 n = vertices[i + 1] - vertices[i];
+                normals[i] = new FixVec2(-n.Y, n.X).Normalized();
             }
         }
 
@@ -198,9 +196,10 @@ namespace TDFP.Colliders
                 Handles.DrawLine((Vector3)((pos + (tdTransform.rotation * vertices[i]))),
                     (Vector3)((pos + (tdTransform.rotation * vertices[i + 1]))));
             }
-            Handles.DrawLine((Vector3)((pos + (tdTransform.rotation * vertices[vertices.Count - 1]))),
-                (Vector3)((pos + (tdTransform.rotation * vertices[0]))));
 
+            //Draw bounding box.
+            UnityEditor.Handles.color = Color.white;
+            Handles.DrawLine((Vector3)(boundingBox.min), (Vector3)(boundingBox.max));
         }
 #endif
     }

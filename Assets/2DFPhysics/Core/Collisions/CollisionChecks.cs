@@ -6,10 +6,11 @@ namespace TDFP.Core
     public static class CollisionChecks
     {
         public static CollisionCallback[,] dispatch =
-        new CollisionCallback[2,2]
+        new CollisionCallback[3,3]
         {
-            { CollisionCircleCircle.instance, CollisionCirclePolygon.instance },
-            { CollisionPolygonCircle.instance, CollisionPolygonPolygon.instance }
+            { CollisionCircleCircle.instance, CollisionCirclePolygon.instance, CollisionCircleEdge.instance },
+            { CollisionPolygonCircle.instance, CollisionPolygonPolygon.instance, CollisionPolygonEdge.instance },
+            { CollisionEdgeCircle.instance, CollisionEdgePolygon.instance, CollisionEdgeEdge.instance }
         };
 
         public static bool AABBvsAABB(Manifold m)

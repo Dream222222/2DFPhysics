@@ -187,5 +187,12 @@ namespace TDFP.Core
             return a >= b * settings.biasRelative + a * settings.biasAbsolute;
         }
         #endregion
+
+        #region Physics
+        public bool Raycast()
+        {
+            return false;
+        }
+        #endregion
     }
 }
