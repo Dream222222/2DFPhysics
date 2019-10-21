@@ -9,6 +9,14 @@ namespace TDFP.Core
         public TFPCollider collider;
         public GameObject gameObject;
         public FPRigidbody rigidbody;
-        public Transform transform;
+        public TDFPTransform transform;
+
+        public TDFPCollision(TFPCollider collider)
+        {
+            this.collider = collider;
+            gameObject = collider.gameObject;
+            rigidbody = collider.body;
+            transform = collider.tdTransform;
+        }
     }
 }

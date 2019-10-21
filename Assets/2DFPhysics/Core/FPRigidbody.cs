@@ -11,11 +11,11 @@ namespace TDFP.Core
     [ExecuteInEditMode]
     public class FPRigidbody : MonoBehaviour
     {
-        public delegate void OnCollisionEnterAction(TFPCollider coll);
+        public delegate void OnCollisionEnterAction(TDFPCollision collision);
         public event OnCollisionEnterAction OnCollisionEnter;
-        public delegate void OnCollisionStayAction(TFPCollider coll);
+        public delegate void OnCollisionStayAction(TDFPCollision collision);
         public event OnCollisionStayAction OnCollisionStay;
-        public delegate void OnCollisionEndAction(TFPCollider coll);
+        public delegate void OnCollisionEndAction(TDFPCollision collision);
         public event OnCollisionEndAction OnCollisionExit;
         public delegate void OnTriggerEnterAction(TFPCollider coll);
         public event OnTriggerEnterAction OnTriggerEnter;
@@ -207,6 +207,10 @@ namespace TDFP.Core
                     {
                         OnTriggerStay?.Invoke(currentlyCollidingWith[i]);
                     }
+                    else
+                    {
+                        OnCollisionStay?.Invoke(new TDFPCollision(currentlyCollidingWith[i]));
+                    }
                 }
                 else
                 {
@@ -214,6 +218,10 @@ namespace TDFP.Core
                     if (coll.isTrigger)
                     {
                         OnTriggerEnter?.Invoke(currentlyCollidingWith[i]);
+                    }
+                    else
+                    {
+                        OnCollisionEnter?.Invoke(new TDFPCollision(currentlyCollidingWith[i]));
                     }
                 }
             }
@@ -226,6 +234,10 @@ namespace TDFP.Core
                     if (coll.isTrigger)
                     {
                         OnTriggerExit?.Invoke(lastCollidedWith[w]);
+                    }
+                    else
+                    {
+                        OnCollisionExit?.Invoke(new TDFPCollision(lastCollidedWith[w]));
                     }
                 }
             }
