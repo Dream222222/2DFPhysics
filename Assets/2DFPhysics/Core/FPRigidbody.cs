@@ -11,12 +11,15 @@ namespace TDFP.Core
     [ExecuteInEditMode]
     public class FPRigidbody : MonoBehaviour
     {
-        public delegate void OnTriggerEnterAction();
-        public static event OnTriggerEnterAction OnTriggerEnter;
-        public delegate void OnTriggerStayAction();
-        public static event OnTriggerStayAction OnTriggerStay;
-        public delegate void OnTriggerEndAction();
-        public static event OnTriggerEndAction OnTriggerEnd;
+        public delegate void OnTriggerEnterAction(TFPCollider coll);
+        public event OnTriggerEnterAction OnTriggerEnter;
+        public delegate void OnTriggerStayAction(TFPCollider coll);
+        public event OnTriggerStayAction OnTriggerStay;
+        public delegate void OnTriggerEndAction(TFPCollider coll);
+        public event OnTriggerEndAction OnTriggerExit;
+
+        [HideInInspector] public List<TFPCollider> lastCollidedWith = new List<TFPCollider>();
+        [HideInInspector] public List<TFPCollider> currentlyCollidingWith = new List<TFPCollider>();
 
         public FixVec2 Position { 
             get {
@@ -185,6 +188,43 @@ namespace TDFP.Core
             {
                 transform.position = newPos;
             }*/
+        }
+
+        public void HandlePhysicsEvents()
+        {
+            for(int i = 0; i < currentlyCollidingWith.Count; i++)
+            {
+                if (lastCollidedWith.Contains(currentlyCollidingWith[i]))
+                {
+                    //Collided with it last frame.
+                    if (coll.isTrigger)
+                    {
+                        OnTriggerStay?.Invoke(currentlyCollidingWith[i]);
+                    }
+                }
+                else
+                {
+                    //Did not collide with last frame.
+                    if (coll.isTrigger)
+                    {
+                        OnTriggerEnter?.Invoke(currentlyCollidingWith[i]);
+                    }
+                }
+            }
+
+            for(int w = 0; w < lastCollidedWith.Count; w++)
+            {
+                //If we've exited collision with a collider.
+                if (!currentlyCollidingWith.Contains(lastCollidedWith[w]))
+                {
+                    if (coll.isTrigger)
+                    {
+                        OnTriggerExit?.Invoke(lastCollidedWith[w]);
+                    }
+                }
+            }
+            lastCollidedWith = new List<TFPCollider>(currentlyCollidingWith);
+            currentlyCollidingWith.Clear();
         }
     }
 }

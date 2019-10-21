@@ -124,11 +124,11 @@ namespace TDFP.Core
 
                 if (broadPhasePairs[i].contactCount > 0)
                 {
-                    if (broadPhasePairs[i].A.coll.isTrigger)
-                    {
-                        continue;
-                    }
-                    if (broadPhasePairs[i].B.coll.isTrigger)
+                    broadPhasePairs[i].A.currentlyCollidingWith.Add(broadPhasePairs[i].B.coll);
+                    broadPhasePairs[i].B.currentlyCollidingWith.Add(broadPhasePairs[i].A.coll);
+                    //If either are a trigger, just exit out.
+                    if (broadPhasePairs[i].A.coll.isTrigger
+                        || broadPhasePairs[i].B.coll.isTrigger)
                     {
                         continue;
                     }
@@ -169,12 +169,14 @@ namespace TDFP.Core
                 narrowPhasePairs[i].PositionalCorrection();
             }
 
-            // Clear all forces
             for (int i = 0; i < bodies.Count; ++i)
             {
+                // Clear all forces
                 FPRigidbody b = bodies[i];
                 b.info.force = new FixVec2(0, 0);
                 b.info.torque = 0;
+                //Handle events
+                b.HandlePhysicsEvents();
             }
         }
 

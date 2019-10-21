@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using TDFP.Core;
 using TDFP.Colliders;
 using FixedPointy;
@@ -9,7 +7,6 @@ public class CreateBodies : MonoBehaviour
 {
     public GameObject circleSprite;
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetMouseButtonDown(0))

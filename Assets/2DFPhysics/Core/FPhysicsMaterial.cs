@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using FixedPointy;
 
 namespace TDFP.Core
@@ -10,6 +8,6 @@ namespace TDFP.Core
     {
         public Fix staticFriction = (Fix).4f;
         public Fix dynamicFriction = (Fix).2f;
-        public FixConst bounciness;
+        public Fix bounciness;
     }
 }

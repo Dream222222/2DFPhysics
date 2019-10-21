@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using FixedPointy;
 using TDFP.Core;
-
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -33,26 +32,6 @@ namespace TDFP.Colliders
 
         public override void RecalcAABB(FixVec2 pos)
         {
-            /*
-            for (int i = 0; i < vertices.Count; i++)
-            {
-                if (vertices[i].X + pos._x < boundingBox.min.X)
-                {
-                    boundingBox.min._x = vertices[i].X + pos._x;
-                }
-                if (vertices[i].Y + pos._y < boundingBox.min.Y)
-                {
-                    boundingBox.min._y = vertices[i].Y + pos._y;
-                }
-                if (vertices[i].X + pos._x > boundingBox.max.X)
-                {
-                    boundingBox.max._x = vertices[i].X + pos._x;
-                }
-                if (vertices[i].Y + pos._y > boundingBox.max.Y)
-                {
-                    boundingBox.max._y = vertices[i].Y + pos._y;
-                }
-            }*/
             SetAABB(pos);
         }
 
@@ -88,7 +67,7 @@ namespace TDFP.Colliders
             return TFPColliderType.Polygon;
         }
 
-        public void set(List<FixVec2> verts)
+        public void SetVertices(List<FixVec2> verts)
         {
             // Find the right most point on the hull
             int rightMost = 0;
