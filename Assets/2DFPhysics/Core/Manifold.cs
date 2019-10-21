@@ -36,7 +36,7 @@ namespace TDFP.Core
         public void initialize()
         {
             // Calculate average bounciness/restitution
-            e = FixMath.Min(A.material.bounciness, B.material.bounciness);
+            e = FixMath.Min(A.Bounciness, B.Bounciness);
 
             // Calculate static & dynamic friction
             sf = FixMath.Sqrt(A.StaticFriction * A.StaticFriction + B.StaticFriction * B.StaticFriction);

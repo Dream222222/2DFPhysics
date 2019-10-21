@@ -11,6 +11,13 @@ namespace TDFP.Core
     [ExecuteInEditMode]
     public class FPRigidbody : MonoBehaviour
     {
+        public delegate void OnTriggerEnterAction();
+        public static event OnTriggerEnterAction OnTriggerEnter;
+        public delegate void OnTriggerStayAction();
+        public static event OnTriggerStayAction OnTriggerStay;
+        public delegate void OnTriggerEndAction();
+        public static event OnTriggerEndAction OnTriggerEnd;
+
         public FixVec2 Position { 
             get {
                 return info.position;
@@ -81,6 +88,7 @@ namespace TDFP.Core
                 //In edit mode, return out.
                 return;
             }
+            TDFPhysics.bodies.Add(this);
             coll = GetComponent<TFPCollider>();
             coll.body = this;
             info.position = (FixVec2)fpTransform.Position;
@@ -91,6 +99,11 @@ namespace TDFP.Core
 
             invMass = mass != Fix.Zero ? Fix.One / mass : Fix.Zero;
             invInertia = inertia != Fix.Zero ? Fix.One / inertia : Fix.Zero;
+        }
+
+        private void OnDestroy()
+        {
+            TDFPhysics.bodies.Remove(this);
         }
 
         private void Start()

@@ -9,14 +9,13 @@ namespace TDFP.Core
     public class TDFPhysics : MonoBehaviour
     {
         public static TDFPhysics instance;
+        public static List<FPRigidbody> bodies = new List<FPRigidbody>();
 
         [HideInInspector] public Fix resting;
         [HideInInspector] public Fix penetrationAllowance = (Fix)0.05f;
         [HideInInspector] public Fix penetrationCorrection = (Fix)0.4f;
 
         public TDFPSettings settings;
-
-        public List<FPRigidbody> bodies = new List<FPRigidbody>();
 
         //Broad Phase
         private List<Manifold> broadPhasePairs = new List<Manifold>();
@@ -125,6 +124,14 @@ namespace TDFP.Core
 
                 if (broadPhasePairs[i].contactCount > 0)
                 {
+                    if (broadPhasePairs[i].A.coll.isTrigger)
+                    {
+                        continue;
+                    }
+                    if (broadPhasePairs[i].B.coll.isTrigger)
+                    {
+                        continue;
+                    }
                     narrowPhasePairs.Add(broadPhasePairs[i]);
                 }
             }
