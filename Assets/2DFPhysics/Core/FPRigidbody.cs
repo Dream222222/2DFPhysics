@@ -11,6 +11,12 @@ namespace TDFP.Core
     [ExecuteInEditMode]
     public class FPRigidbody : MonoBehaviour
     {
+        public delegate void OnCollisionEnterAction(TFPCollider coll);
+        public event OnCollisionEnterAction OnCollisionEnter;
+        public delegate void OnCollisionStayAction(TFPCollider coll);
+        public event OnCollisionStayAction OnCollisionStay;
+        public delegate void OnCollisionEndAction(TFPCollider coll);
+        public event OnCollisionEndAction OnCollisionExit;
         public delegate void OnTriggerEnterAction(TFPCollider coll);
         public event OnTriggerEnterAction OnTriggerEnter;
         public delegate void OnTriggerStayAction(TFPCollider coll);
