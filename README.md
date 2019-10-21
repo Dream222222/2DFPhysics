@@ -10,6 +10,7 @@
 ## Resources
 * [The Great Divide: Unique Visuals and Deterministic Gameplay in Deserts of Kharak](https://www.youtube.com/watch?v=wwLW6CjswxM)  
 * [How to Create a Custom 2D Physics Engine](https://gamedevelopment.tutsplus.com/tutorials/how-to-create-a-custom-2d-physics-engine-the-basics-and-impulse-resolution--gamedev-6331)  
+* [Broad Phase using Spatial Partitioning](http://buildnewgames.com/broad-phase-collision-detection/)   
 
 
 ## Other Details
