@@ -193,7 +193,7 @@ namespace TDFP.Core
         #endregion
 
         #region Physics
-        public bool Raycast()
+        public bool Raycast(FixVec2 origin, FixVec2 firection, Fix maxDistance)
         {
             return false;
         }

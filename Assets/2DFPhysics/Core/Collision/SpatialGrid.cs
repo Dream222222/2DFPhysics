@@ -131,6 +131,13 @@ namespace TDFP.Core
                                 checkList.Add(hashA);
                                 checkList.Add(hashB);
 
+                                //If the bodies shouldn't collide, ignore them.
+                                int layermask = LayerMask.GetMask(LayerMask.LayerToName(rigidA.gameObject.layer));
+                                if (layermask != (layermask | (1 << rigidB.gameObject.layer)))
+                                {
+                                    continue;
+                                }
+
                                 // If both bodies are static, ignore them.
                                 if (rigidA.invMass == 0 && rigidB.invMass == 0)
                                 {
