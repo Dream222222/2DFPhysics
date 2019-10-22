@@ -52,7 +52,6 @@ namespace TDFP.Core
                     //t1 is the intersection, and it's closer than t2.
                     m.contactCount = 1;
                     m.contacts[0] = (A.u * A.vertices[i] + a.Position) + (t1 * rayDir);
-                    //m.normal = (A.u * (A.vertices[i] - circleCenter)).Normalized();
                     m.normal = A.normals[i];
                     m.penetration = B.radius - s;
                     return;
@@ -64,7 +63,6 @@ namespace TDFP.Core
                     // or completely past it.
                     m.contactCount = 1;
                     m.contacts[0] = (A.u * A.vertices[i] + a.Position) + (t2 * rayDir);
-                    //m.normal = -(A.u * (A.vertices[i] - circleCenter)).Normalized();
                     m.normal = A.normals[i];
                     m.penetration = B.radius - s;
                     return;

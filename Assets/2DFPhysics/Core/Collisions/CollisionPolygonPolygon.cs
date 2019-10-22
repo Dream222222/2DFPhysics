@@ -180,13 +180,15 @@ namespace TDFP.Core
             Fix bestDistance = -Fix.MaxValue;
             int bestIndex = 0;
 
+            Mat22 buT;
             for (int i = 0; i < A.vertices.Count; ++i)
             {
                 // Retrieve a face normal from A
                 FixVec2 nw = A.u * A.normals[i];
 
                 // Transform face normal into B's model space
-                Mat22 buT = B.u.Transposed();
+                buT = B.u;
+                buT.Transpose();
                 FixVec2 n = buT * nw;
 
                 // Retrieve support point from B along -n

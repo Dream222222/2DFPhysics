@@ -10,6 +10,7 @@ namespace TDFP.Core
     {
         public static TDFPhysics instance;
         public static List<FPRigidbody> bodies = new List<FPRigidbody>();
+        public static List<Manifold> broadPhasePairs = new List<Manifold>();
 
         [HideInInspector] public Fix resting;
         [HideInInspector] public Fix penetrationAllowance = (Fix)0.05f;
@@ -17,8 +18,7 @@ namespace TDFP.Core
 
         public TDFPSettings settings;
 
-        //Broad Phase
-        private List<Manifold> broadPhasePairs = new List<Manifold>();
+        private SpatialGrid spatialGrid;
         private List<Manifold> narrowPhasePairs = new List<Manifold>();
 
         private void Awake()
@@ -27,6 +27,7 @@ namespace TDFP.Core
 
             //Init variables.
             resting = (settings.gravity * settings.deltaTime).GetMagnitudeSquared() + Fix.Epsilon;
+            spatialGrid = new SpatialGrid(settings.gridMinPosition, settings.gridMaxPosition, settings.gridCellSize);
         }
 
         private void Update()
@@ -52,11 +53,13 @@ namespace TDFP.Core
 
         public void UpdatePhysics(Fix dt)
         {
-            BroadPhase();
+            broadPhasePairs.Clear();
+            spatialGrid.Update();
             NarrowPhase();
         }
 
         #region Broad Phase
+        /*
         private void BroadPhase()
         {
             broadPhasePairs.Clear();
@@ -67,6 +70,7 @@ namespace TDFP.Core
                 {
                     continue;
                 }
+
                 for (int w = i+1; w < bodies.Count; w++)
                 {
                     // Body isn't in the simulation, ignore it.
@@ -81,13 +85,13 @@ namespace TDFP.Core
                         continue;
                     }
 
-                    if (CollisionChecks.AABBvsAABB(new Manifold(bodies[i], bodies[w])) == true)
+                    if (CollisionChecks.AABBvsAABB(bodies[i].coll, bodies[w].coll))
                     {
                         broadPhasePairs.Add(new Manifold(bodies[i], bodies[w]));
                     }
                 }
             }
-        }
+        }*/
         #endregion
 
         #region Narrow Phase

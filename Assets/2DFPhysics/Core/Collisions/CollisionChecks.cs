@@ -13,11 +13,8 @@ namespace TDFP.Core
             { CollisionEdgeCircle.instance, CollisionEdgePolygon.instance, CollisionEdgeEdge.instance }
         };
 
-        public static bool AABBvsAABB(Manifold m)
+        public static bool AABBvsAABB(TFPCollider aCol, TFPCollider bCol)
         {
-            TFPCollider aCol = m.A.coll;
-            TFPCollider bCol = m.B.coll;
-
             // Exit with no intersection if found separated along an axis
             if (aCol.boundingBox.max._x < bCol.boundingBox.min._x || aCol.boundingBox.min._x > bCol.boundingBox.max._x) return false;
 

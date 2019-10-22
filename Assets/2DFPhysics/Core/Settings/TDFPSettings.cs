@@ -16,5 +16,9 @@ namespace TDFP.Core
         public Fix biasAbsolute = (Fix)(0.01f);
         public int solveCollisionIterations = 1;
         public FPhysicsMaterial defaultMaterial;
+        [Header("Spatial Grid")]
+        public FixVec2 gridMinPosition;
+        public FixVec2 gridMaxPosition;
+        public FixVec2 gridCellSize;
     }
 }

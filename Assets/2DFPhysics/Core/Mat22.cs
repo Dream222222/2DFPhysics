@@ -4,24 +4,26 @@ using UnityEngine;
 namespace TDFP.Core
 {
     [System.Serializable]
-    public class Mat22
+    public struct Mat22
     {
         public Fix m00, m01;
         public Fix m10, m11;
 
-        public Mat22()
-        {
-            Set(0);
-        }
-
         public Mat22(Fix degrees)
         {
+            m00 = 0;
+            m01 = 0;
+            m10 = 0;
+            m11 = 0;
             Set(degrees);
         }
 
         public Mat22(Fix a, Fix b, Fix c, Fix d)
         {
-            Set(a, b, c, d);
+            m00 = a;
+            m01 = b;
+            m10 = c;
+            m11 = d;
         }
 
         public void Set(Fix degrees)

@@ -28,3 +28,18 @@ MonoBehaviour:
     raw: 655
   solveCollisionIterations: 3
   defaultMaterial: {fileID: 11400000, guid: ed97aaacf27b7ef44bd18d448dc1d251, type: 2}
+  gridMinPosition:
+    _x:
+      raw: -19660800
+    _y:
+      raw: -19660800
+  gridMaxPosition:
+    _x:
+      raw: 19660800
+    _y:
+      raw: 19660800
+  gridCellSize:
+    _x:
+      raw: 327680
+    _y:
+      raw: 327680
