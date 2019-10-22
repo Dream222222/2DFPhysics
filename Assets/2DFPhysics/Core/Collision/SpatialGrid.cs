@@ -23,12 +23,21 @@ namespace TDFP.Core
             this.cellSize = cellSize;
             this.columns = (int)((max.X - min.X) / cellSize.X);
             this.rows = (int)((max.Y - min.Y) / cellSize.Y);
+            grid = new List<FPRigidbody>[columns][];
+        }
+
+        void ResetGrid()
+        {
+            for(int i = 0; i < columns; i++)
+            {
+                grid[i] = null;
+            }
         }
 
         public void Update()
         {
             //Reset our cells.
-            grid = new List<FPRigidbody>[columns][];
+            ResetGrid();
 
             // insert all entities into grid
             for (int i = 0; i < TDFPhysics.bodies.Count; i++)
@@ -50,11 +59,11 @@ namespace TDFP.Core
 
                 // find extremes of cells that entity overlaps
                 // subtract min to shift grid to avoid negative numbers
-                int cXEntityMin = Mathf.FloorToInt((float)((rigid.bounds.min.X - min.X) / cellSize.X));
-                int cXEntityMax = Mathf.FloorToInt((float)((rigid.bounds.max.X - min.X) / cellSize.X));
+                int cXEntityMin = Mathf.FloorToInt((int)((rigid.bounds.min.X - min.X) / cellSize.X));
+                int cXEntityMax = Mathf.FloorToInt((int)((rigid.bounds.max.X - min.X) / cellSize.X));
 
-                int cYEntityMin = Mathf.FloorToInt((float)((rigid.bounds.min.Y - min.Y) / cellSize.Y));
-                int cYEntityMax = Mathf.FloorToInt((float)((rigid.bounds.max.Y - min.Y) / cellSize.Y));
+                int cYEntityMin = Mathf.FloorToInt((int)((rigid.bounds.min.Y - min.Y) / cellSize.Y));
+                int cYEntityMax = Mathf.FloorToInt((int)((rigid.bounds.max.Y - min.Y) / cellSize.Y));
 
                 // insert entity into each cell it overlaps
                 // we're looping to make sure that all cells between extremes are found
