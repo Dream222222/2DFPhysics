@@ -43,3 +43,5 @@ MonoBehaviour:
       raw: 327680
     _y:
       raw: 327680
+  aabbFattening:
+    raw: 65536

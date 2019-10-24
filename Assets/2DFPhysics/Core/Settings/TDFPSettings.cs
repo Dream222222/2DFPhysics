@@ -20,5 +20,7 @@ namespace TDFP.Core
         public FixVec2 gridMinPosition;
         public FixVec2 gridMaxPosition;
         public FixVec2 gridCellSize;
+        [Header("Dynamic Tree")]
+        public Fix aabbFattening = 1;
     }
 }
