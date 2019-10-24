@@ -9,7 +9,7 @@ namespace TDFP.Core
     public class TDFPhysics : MonoBehaviour
     {
         public static TDFPhysics instance;
-        public static List<FPRigidbody> bodies = new List<FPRigidbody>();
+        public static List<FPRigidbody> bodies { protected get; set; } = new List<FPRigidbody>();
         public static List<Manifold> broadPhasePairs = new List<Manifold>();
 
         [HideInInspector] public Fix resting;
@@ -19,6 +19,7 @@ namespace TDFP.Core
         public TDFPSettings settings;
 
         private SpatialGrid spatialGrid;
+        private DynamicTree dynamicTree;
         private List<Manifold> narrowPhasePairs = new List<Manifold>();
 
         private void Awake()
@@ -54,8 +55,26 @@ namespace TDFP.Core
         public void UpdatePhysics(Fix dt)
         {
             broadPhasePairs.Clear();
-            spatialGrid.Update();
+            spatialGrid.Update(bodies);
             NarrowPhase();
+        }
+
+        /// <summary>
+        /// Adds a body to the simulation.
+        /// </summary>
+        /// <param name="body"></param>
+        public static void AddBody(FPRigidbody body)
+        {
+            bodies.Add(body);
+        }
+
+        /// <summary>
+        /// Removes a body from the simulation.
+        /// </summary>
+        /// <param name="body"></param>
+        public static void RemoveBody(FPRigidbody body)
+        {
+            bodies.Remove(body);
         }
 
         #region Broad Phase

@@ -22,5 +22,6 @@ namespace TDFP.Core
         public FixVec2 gridCellSize;
         [Header("Dynamic Tree")]
         public Fix aabbFattening = 1;
+        public Fix aabbMultiplier = 1;
     }
 }

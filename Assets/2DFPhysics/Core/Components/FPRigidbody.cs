@@ -97,7 +97,7 @@ namespace TDFP.Core
                 //In edit mode, return out.
                 return;
             }
-            TDFPhysics.bodies.Add(this);
+            TDFPhysics.AddBody(this);
             coll = GetComponent<TFPCollider>();
             coll.body = this;
             info.position = (FixVec2)fpTransform.Position;
@@ -112,7 +112,7 @@ namespace TDFP.Core
 
         private void OnDestroy()
         {
-            TDFPhysics.bodies.Remove(this);
+            TDFPhysics.RemoveBody(this);
         }
 
         private void Start()

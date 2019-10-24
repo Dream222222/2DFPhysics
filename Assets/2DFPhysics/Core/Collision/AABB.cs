@@ -7,6 +7,16 @@ namespace TDFP.Core{
         public FixVec2 min;
         public FixVec2 max;
 
+        public bool Contains(AABB aabb)
+        {
+            if (aabb.min.X >= min.X && aabb.min.Y >= min.Y
+                && aabb.max.X <= max.X && aabb.max.Y <= max.Y)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public static AABB Union(AABB a, AABB b)
         {
             AABB C;

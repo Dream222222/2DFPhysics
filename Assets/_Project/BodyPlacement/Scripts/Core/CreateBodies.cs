@@ -46,6 +46,5 @@ public class CreateBodies : MonoBehaviour
         cSprite.transform.SetParent(go.transform, false);
 
         rb.material = TDFPhysics.instance.settings.defaultMaterial;
-        TDFPhysics.bodies.Add(rb);
     }
 }

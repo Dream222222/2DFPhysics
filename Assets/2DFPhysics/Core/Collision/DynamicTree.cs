@@ -41,59 +41,11 @@ namespace TDFP.Core
         }
 
         /// <summary>
-        /// Gets a free node from the pool.
+        /// Creates a proxy in the tree as a leaf node.
         /// </summary>
+        /// <param name="aabb"></param>
+        /// <param name="bodyIndex"></param>
         /// <returns></returns>
-        private int AllocateNode()
-        {
-            // Expand the node pool as needed.
-            if(freeList == nullNode)
-            {
-                // Free list is empty. Rebuild a bigger pool.
-                nodeCapacity *= 2;
-                while(nodes.Count < nodeCapacity)
-                {
-                    nodes.Add(new DTNode());
-                }
-
-                // Build a linked list for the free list.
-                for(int i = nodeCount; i < nodeCapacity; ++i)
-                {
-                    nodes[i].nextNodeIndex = i + 1;
-                    nodes[i].height = -1;
-                }
-
-                nodes[nodeCapacity - 1].nextNodeIndex = nullNode;
-                nodes[nodeCapacity - 1].height = -1;
-                freeList = nodeCount;
-            }
-
-            // Peel a node off the free list.
-            int nodeId = freeList;
-            freeList = nodes[nodeId].nextNodeIndex;
-            nodes[nodeId].parentIndex = nullNode;
-            nodes[nodeId].leftChildIndex = nullNode;
-            nodes[nodeId].rightChildIndex = nullNode;
-            nodes[nodeId].height = 0;
-            nodes[nodeId].bodyIndex = -1;
-            ++nodeCount;
-            return nodeId;
-        }
-
-        /// <summary>
-        /// Returns a node to the pool.
-        /// </summary>
-        /// <param name="nodeIndex"></param>
-        private void FreeNode(int nodeIndex)
-        {
-            nodes[nodeIndex].nextNodeIndex = freeList;
-            nodes[nodeIndex].height = -1;
-            freeList = nodeIndex;
-            --nodeCount;
-        }
-
-        // Create a proxy in the tree as a leaf node. We return the index
-        // of the node so that we can grow the node pool.
         public int CreateProxy(AABB aabb, int bodyIndex)
         {
             int proxyId = AllocateNode();
@@ -105,7 +57,7 @@ namespace TDFP.Core
             nodes[proxyId].bodyIndex = bodyIndex;
             nodes[proxyId].height = 0;
 
-            InsertLeaf(proxyId, bodyIndex);
+            InsertLeaf(proxyId);
 
             return proxyId;
         }
@@ -116,13 +68,86 @@ namespace TDFP.Core
             FreeNode(proxyId);
         }
 
+        /// <summary>
+        /// Move a proxy with a swepted AABB. If the proxy has moved outside of its fattened AABB,
+        /// then the proxy is removed from the tree and re-inserted.
+        /// </summary>
+        /// <param name="proxyId">The ID of the proxy.</param>
+        /// <param name="aabb">The AABB of the proxy.</param>
+        /// <param name="displacement">How much the proxy was displaced.</param>
+        /// <returns>True if the proxy was reinserted. </returns>
         public bool MoveProxy(int proxyId, AABB aabb, FixVec2 displacement)
         {
-            return false;
+            // If the node is still inside the bounds, don't bother moving it.
+            if (nodes[proxyId].aabb.Contains(aabb))
+            {
+                return false;
+            }
+
+            RemoveLeaf(proxyId);
+
+
+            // Extend AABB.
+            var b = aabb;
+            FixVec2 r = new FixVec2(TDFPhysics.instance.settings.aabbFattening, TDFPhysics.instance.settings.aabbFattening);
+            b.min = b.min - r;
+            b.max = b.max + r;
+
+            // Predict AABB displacement.
+            FixVec2 d = TDFPhysics.instance.settings.aabbMultiplier * displacement;
+
+            if (d.X < Fix.Zero)
+            {
+                b.min._x += d._x;
+            }
+            else
+            {
+                b.max._x += d._x;
+            }
+
+            if (d.Y < Fix.Zero)
+            {
+                b.min._y += d.Y;
+            }
+            else
+            {
+                b.max._y += d.Y;
+            }
+
+            nodes[proxyId].aabb = b;
+
+            InsertLeaf(proxyId);
+            return true;
+        }
+
+        public void ShiftOrigin(FixVec2 newOrigin)
+        {
+            // Build array of leaves. Free the rest.
+            for (int i = 0; i < nodeCapacity; ++i)
+            {
+                nodes[i].aabb.min -= newOrigin;
+                nodes[i].aabb.max -= newOrigin;
+            }
+        }
+
+        /// <summary>
+        /// Compute the cost of the tree. This gets the area of nodes, ignoring leaves. 
+        /// </summary>
+        public Fix ComputeCost()
+        {
+            Fix cost = 0;
+            for (int i = 0; i < nodeCount; i++)
+            {
+                if (!nodes[i].IsLeaf())
+                {
+                    cost += AABB.Area(nodes[i].aabb);
+                }
+            }
+            return cost;
         }
 
         // Insert a leaf into the tree.
-        public void InsertLeaf(int leafIndex, int bodyIndex)
+        private void InsertLeaf(int leafIndex)
         {
             if(rootIndex == nullNode)
             {
@@ -189,7 +214,7 @@ namespace TDFP.Core
         /// Remove a leaf from the tree.
         /// </summary>
         /// <param name="leafIndex">The index of the leaf to remove.</param>
-        public void RemoveLeaf(int leafIndex)
+        private void RemoveLeaf(int leafIndex)
         {
             if(leafIndex == rootIndex)
             {
@@ -457,30 +482,56 @@ namespace TDFP.Core
             return index;
         }
 
-        public void ShiftOrigin(FixVec2 newOrigin)
+        /// <summary>
+        /// Gets a free node from the pool.
+        /// </summary>
+        /// <returns></returns>
+        private int AllocateNode()
         {
-            // Build array of leaves. Free the rest.
-            for (int i = 0; i < nodeCapacity; ++i)
+            // Expand the node pool as needed.
+            if (freeList == nullNode)
             {
-                nodes[i].aabb.min -= newOrigin;
-                nodes[i].aabb.max -= newOrigin;
+                // Free list is empty. Rebuild a bigger pool.
+                nodeCapacity *= 2;
+                while (nodes.Count < nodeCapacity)
+                {
+                    nodes.Add(new DTNode());
+                }
+
+                // Build a linked list for the free list.
+                for (int i = nodeCount; i < nodeCapacity; ++i)
+                {
+                    nodes[i].nextNodeIndex = i + 1;
+                    nodes[i].height = -1;
+                }
+
+                nodes[nodeCapacity - 1].nextNodeIndex = nullNode;
+                nodes[nodeCapacity - 1].height = -1;
+                freeList = nodeCount;
             }
+
+            // Peel a node off the free list.
+            int nodeId = freeList;
+            freeList = nodes[nodeId].nextNodeIndex;
+            nodes[nodeId].parentIndex = nullNode;
+            nodes[nodeId].leftChildIndex = nullNode;
+            nodes[nodeId].rightChildIndex = nullNode;
+            nodes[nodeId].height = 0;
+            nodes[nodeId].bodyIndex = -1;
+            ++nodeCount;
+            return nodeId;
         }
 
         /// <summary>
-        /// Compute the cost of the tree. This gets the area of nodes, ignoring leaves. 
+        /// Returns a node to the pool.
         /// </summary>
-        public Fix ComputeCost()
+        /// <param name="nodeIndex"></param>
+        private void FreeNode(int nodeIndex)
         {
-            Fix cost = 0;
-            for(int i = 0; i < nodeCount; i++)
-            {
-                if (!nodes[i].IsLeaf())
-                {
-                    cost += AABB.Area(nodes[i].aabb);
-                }
-            }
-            return cost;
+            nodes[nodeIndex].nextNodeIndex = freeList;
+            nodes[nodeIndex].height = -1;
+            freeList = nodeIndex;
+            --nodeCount;
         }
     }
 }

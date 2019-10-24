@@ -34,15 +34,15 @@ namespace TDFP.Core
             }
         }
 
-        public void Update()
+        public void Update(List<FPRigidbody> bodies)
         {
             //Reset our cells.
             ResetGrid();
 
             // insert all entities into grid
-            for (int i = 0; i < TDFPhysics.bodies.Count; i++)
+            for (int i = 0; i < bodies.Count; i++)
             {
-                FPRigidbody rigid = TDFPhysics.bodies[i];
+                FPRigidbody rigid = bodies[i];
 
                 // If the rigidbody isn't part of the simulation, ignore it.
                 if (!rigid.simulated)
