@@ -34,7 +34,7 @@ namespace TDFP.Core
             }
         }
 
-        public void Update(List<FPRigidbody> bodies)
+        public void Update(TDFPPhysicsScene scene, List<FPRigidbody> bodies)
         {
             //Reset our cells.
             ResetGrid();
@@ -89,10 +89,10 @@ namespace TDFP.Core
             }
 
             //Get broad phase pairs.
-            GetPairs();
+            GetPairs(scene);
         }
 
-        private void GetPairs()
+        private void GetPairs(TDFPPhysicsScene scene)
         {
             List<int> checkList = new List<int>();
 
@@ -146,7 +146,7 @@ namespace TDFP.Core
 
                                 if (CollisionChecks.AABBvsAABB(rigidA.coll, rigidB.coll))
                                 {
-                                    TDFPhysics.broadPhasePairs.Add(new Manifold(rigidA, rigidB));
+                                    scene.broadPhasePairs.Add(new Manifold(rigidA, rigidB));
                                 }
                             }
                         }

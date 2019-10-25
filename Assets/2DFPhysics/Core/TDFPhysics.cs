@@ -9,8 +9,7 @@ namespace TDFP.Core
     public class TDFPhysics : MonoBehaviour
     {
         public static TDFPhysics instance;
-        public static List<FPRigidbody> bodies { protected get; set; } = new List<FPRigidbody>();
-        public static List<Manifold> broadPhasePairs = new List<Manifold>();
+        private static TDFPPhysicsScene physicsScene = new TDFPPhysicsScene();
 
         [HideInInspector] public Fix resting;
         [HideInInspector] public Fix penetrationAllowance = (Fix)0.05f;
@@ -18,25 +17,12 @@ namespace TDFP.Core
 
         public TDFPSettings settings;
 
-        private SpatialGrid spatialGrid;
-        private DynamicTree dynamicTree;
-        private List<Manifold> narrowPhasePairs = new List<Manifold>();
-
         private void Awake()
         {
+            physicsScene.spatialGrid = new SpatialGrid(settings.gridMinPosition,
+                settings.gridMaxPosition, settings.gridCellSize);
             instance = this;
-
-            //Init variables.
             resting = (settings.gravity * settings.deltaTime).GetMagnitudeSquared() + Fix.Epsilon;
-            spatialGrid = new SpatialGrid(settings.gridMinPosition, settings.gridMaxPosition, settings.gridCellSize);
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.U))
-            {
-                UpdatePhysics(settings.deltaTime);
-            }
         }
 
         private void FixedUpdate()
@@ -47,16 +33,9 @@ namespace TDFP.Core
             }
         }
 
-        void TimeStep()
-        {
-
-        }
-
         public void UpdatePhysics(Fix dt)
         {
-            broadPhasePairs.Clear();
-            spatialGrid.Update(bodies);
-            NarrowPhase();
+            physicsScene.Update();
         }
 
         /// <summary>
@@ -65,7 +44,7 @@ namespace TDFP.Core
         /// <param name="body"></param>
         public static void AddBody(FPRigidbody body)
         {
-            bodies.Add(body);
+            physicsScene.AddBody(body);
         }
 
         /// <summary>
@@ -74,135 +53,8 @@ namespace TDFP.Core
         /// <param name="body"></param>
         public static void RemoveBody(FPRigidbody body)
         {
-            bodies.Remove(body);
+            physicsScene.RemoveBody(body);
         }
-
-        #region Broad Phase
-        /*
-        private void BroadPhase()
-        {
-            broadPhasePairs.Clear();
-            for (int i = 0; i < bodies.Count; i++)
-            {
-                // Body isn't in the simulation, ignore it.
-                if (!bodies[i].simulated)
-                {
-                    continue;
-                }
-
-                for (int w = i+1; w < bodies.Count; w++)
-                {
-                    // Body isn't in the simulation, ignore it.
-                    if(!bodies[w].simulated)
-                    {
-                        continue;
-                    }
-
-                    // If both bodies are static, ignore them.
-                    if (bodies[i].invMass == 0 && bodies[w].invMass == 0)
-                    {
-                        continue;
-                    }
-
-                    if (CollisionChecks.AABBvsAABB(bodies[i].coll, bodies[w].coll))
-                    {
-                        broadPhasePairs.Add(new Manifold(bodies[i], bodies[w]));
-                    }
-                }
-            }
-        }*/
-        #endregion
-
-        #region Narrow Phase
-        private void NarrowPhase()
-        {
-            narrowPhasePairs.Clear();
-            for(int i = 0; i < broadPhasePairs.Count; i++)
-            {
-                broadPhasePairs[i].solve();
-
-                if (broadPhasePairs[i].contactCount > 0)
-                {
-                    broadPhasePairs[i].A.currentlyCollidingWith.Add(broadPhasePairs[i].B.coll);
-                    broadPhasePairs[i].B.currentlyCollidingWith.Add(broadPhasePairs[i].A.coll);
-                    // If either are a trigger, just exit out.
-                    if (broadPhasePairs[i].A.coll.isTrigger
-                        || broadPhasePairs[i].B.coll.isTrigger)
-                    {
-                        continue;
-                    }
-                    narrowPhasePairs.Add(broadPhasePairs[i]);
-                }
-            }
-
-            // Integrate forces
-            for (int i = 0; i < bodies.Count; ++i)
-            {
-                IntegrateForces(bodies[i], settings.deltaTime);
-            }
-
-            // Initialize collision
-            for (int i = 0; i < narrowPhasePairs.Count; ++i)
-            {
-                narrowPhasePairs[i].initialize();
-            }
-
-            // Solve collisions
-            for (int j = 0; j < settings.solveCollisionIterations; ++j)
-            {
-                for (int i = 0; i < narrowPhasePairs.Count; ++i)
-                {
-                    narrowPhasePairs[i].ApplyImpulse();
-                }
-            }
-
-            // Integrate velocities
-            for (int i = 0; i < bodies.Count; ++i)
-            {
-                IntegrateVelocity(bodies[i], settings.deltaTime);
-            }
-
-            // Correct positions
-            for (int i = 0; i < narrowPhasePairs.Count; ++i)
-            {
-                narrowPhasePairs[i].PositionalCorrection();
-            }
-
-            for (int i = 0; i < bodies.Count; ++i)
-            {
-                // Clear all forces
-                FPRigidbody b = bodies[i];
-                b.info.force = new FixVec2(0, 0);
-                b.info.torque = 0;
-                // Handle events
-                b.HandlePhysicsEvents();
-            }
-        }
-
-        private void IntegrateVelocity(FPRigidbody b, Fix dt)
-        {
-            // If the body is static, ignore it.
-            if (b.invMass == Fix.Zero)
-            {
-                return;
-            }
-            b.Position += b.info.velocity * dt;
-            b.info.rotation += b.info.angularVelocity * dt;
-            b.SetRotation(b.info.rotation);
-            IntegrateForces(b, dt);
-        }
-
-        private void IntegrateForces(FPRigidbody b, Fix dt)
-        {
-            // If the body is static, ignore it.
-            if (b.invMass == Fix.Zero)
-            {
-                return;
-            }
-            b.info.velocity += ((b.info.force * b.invMass) + (settings.gravity * b.gravityScale)) * (dt / (Fix.One+Fix.One));
-            b.info.angularVelocity += b.info.torque * b.invInertia * (dt / (Fix.One+Fix.One));
-        }
-        #endregion
 
         #region Physics Checks
         public bool BiasGreaterThan(Fix a, Fix b)
