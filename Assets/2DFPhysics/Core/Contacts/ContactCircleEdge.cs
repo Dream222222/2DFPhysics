@@ -3,13 +3,13 @@ using TDFP.Colliders;
 
 namespace TDFP.Core
 {
-    public class CollisionCircleEdge : CollisionCallback
+    public class ContactCircleEdge : ContactCallback
     {
-        public static readonly CollisionCircleEdge instance = new CollisionCircleEdge();
+        public static readonly ContactCircleEdge instance = new ContactCircleEdge();
 
         public void HandleCollision(Manifold m, FPRigidbody a, FPRigidbody b)
         {
-            CollisionEdgeCircle.instance.HandleCollision(m, b, a);
+            ContactEdgeCircle.instance.HandleCollision(m, b, a);
 
             if (m.contactCount > 0)
             {

@@ -5,9 +5,9 @@ using UnityEngine;
 namespace TDFP.Core
 {
     //https://stackoverflow.com/questions/1073336/circle-line-segment-collision-detection-algorithm
-    public class CollisionEdgeCircle : CollisionCallback
+    public class ContactEdgeCircle : ContactCallback
     {
-        public static readonly CollisionEdgeCircle instance = new CollisionEdgeCircle();
+        public static readonly ContactEdgeCircle instance = new ContactEdgeCircle();
 
         public void HandleCollision(Manifold m, FPRigidbody a, FPRigidbody b)
         {

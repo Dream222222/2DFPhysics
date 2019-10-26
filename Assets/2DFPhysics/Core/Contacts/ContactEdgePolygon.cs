@@ -3,9 +3,9 @@ using TDFP.Colliders;
 
 namespace TDFP.Core
 {
-    public class CollisionEdgeEdge : CollisionCallback
+    public class ContactEdgePolygon : ContactCallback
     {
-        public static readonly CollisionEdgeEdge instance = new CollisionEdgeEdge();
+        public static readonly ContactEdgePolygon instance = new ContactEdgePolygon();
 
         public void HandleCollision(Manifold m, FPRigidbody a, FPRigidbody b)
         {

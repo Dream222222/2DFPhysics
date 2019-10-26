@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace TDFP.Core
 {
-    public class CollisionCirclePolygon : CollisionCallback
+    public class ContactCirclePolygon : ContactCallback
     {
-        public static readonly CollisionCirclePolygon instance = new CollisionCirclePolygon();
+        public static readonly ContactCirclePolygon instance = new ContactCirclePolygon();
 
         public void HandleCollision(Manifold m, FPRigidbody a, FPRigidbody b)
         {

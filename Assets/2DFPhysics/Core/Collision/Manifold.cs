@@ -30,7 +30,7 @@ namespace TDFP.Core
             int ia = (int)A.coll.GetCType();
             int ib = (int)B.coll.GetCType();
 
-            CollisionChecks.dispatch[ia, ib].HandleCollision(this, A, B);
+            ContactChecks.dispatch[ia, ib].HandleCollision(this, A, B);
         }
 
         public void initialize()

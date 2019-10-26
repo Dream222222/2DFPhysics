@@ -3,14 +3,14 @@ using TDFP.Colliders;
 
 namespace TDFP.Core
 {
-    public static class CollisionChecks
+    public static class ContactChecks
     {
-        public static CollisionCallback[,] dispatch =
-        new CollisionCallback[3,3]
+        public static ContactCallback[,] dispatch =
+        new ContactCallback[3,3]
         {
-            { CollisionCircleCircle.instance, CollisionCirclePolygon.instance, CollisionCircleEdge.instance },
-            { CollisionPolygonCircle.instance, CollisionPolygonPolygon.instance, CollisionPolygonEdge.instance },
-            { CollisionEdgeCircle.instance, CollisionEdgePolygon.instance, CollisionEdgeEdge.instance }
+            { ContactCircleCircle.instance, ContactCirclePolygon.instance, ContactCircleEdge.instance },
+            { ContactPolygonCircle.instance, ContactPolygonPolygon.instance, ContactPolygonEdge.instance },
+            { ContactEdgeCircle.instance, ContactEdgePolygon.instance, ContactEdgeEdge.instance }
         };
 
         public static bool AABBvsAABB(TFPCollider aCol, TFPCollider bCol)
