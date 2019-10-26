@@ -24,8 +24,6 @@ namespace TDFP.Core
 
         private void Awake()
         {
-            physicsScene.spatialGrid = new SpatialGrid(settings.gridMinPosition,
-                settings.gridMaxPosition, settings.gridCellSize);
             instance = this;
             resting = (settings.gravity * settings.deltaTime).GetMagnitudeSquared() + Fix.Epsilon;
         }

@@ -13,7 +13,6 @@ namespace TDFP.Core
         public List<Manifold> broadPhasePairs = new List<Manifold>();
         public List<Manifold> narrowPhasePairs = new List<Manifold>();
 
-        public SpatialGrid spatialGrid;
         public DynamicTree dynamicTree = new DynamicTree();
 
         public void AddBody(FPRigidbody body, Fix aabbFattening)
@@ -34,8 +33,7 @@ namespace TDFP.Core
 
         public void Step()
         {
-            broadPhasePairs.Clear();
-            spatialGrid.Update(this, bodies);
+            GetPairs();
             NarrowPhase();
         }
 
