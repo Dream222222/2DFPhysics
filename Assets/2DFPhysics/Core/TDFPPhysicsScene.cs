@@ -32,7 +32,7 @@ namespace TDFP.Core
             }
         }
 
-        public void Update()
+        public void Step()
         {
             broadPhasePairs.Clear();
             spatialGrid.Update(this, bodies);

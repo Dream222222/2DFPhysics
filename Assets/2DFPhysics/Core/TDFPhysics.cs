@@ -34,19 +34,19 @@ namespace TDFP.Core
         {
             if (settings.AutoSimulation)
             {
-                UpdatePhysics(settings.deltaTime);
+                StepPhysics(settings.deltaTime);
             }
         }
 
-        public void UpdatePhysics(Fix dt)
+        public void StepPhysics(Fix dt)
         {
-            physicsScene.Update();
+            physicsScene.Step();
         }
 
         /// <summary>
         /// Adds a body to the simulation.
         /// </summary>
-        /// <param name="body"></param>
+        /// <param name="body">The rigidbody to add.</param>
         public static void AddBody(FPRigidbody body)
         {
             physicsScene.AddBody(body, (Fix)0.2f);
@@ -55,7 +55,7 @@ namespace TDFP.Core
         /// <summary>
         /// Removes a body from the simulation.
         /// </summary>
-        /// <param name="body"></param>
+        /// <param name="body">The rigidbody to remove.</param>
         public static void RemoveBody(FPRigidbody body)
         {
             physicsScene.RemoveBody(body);
