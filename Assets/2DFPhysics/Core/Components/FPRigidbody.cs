@@ -27,6 +27,8 @@ namespace TDFP.Core
         [HideInInspector] public List<TFPCollider> lastCollidedWith = new List<TFPCollider>();
         [HideInInspector] public List<TFPCollider> currentlyCollidingWith = new List<TFPCollider>();
 
+        public int ProxyID { get; set; } = -1;
+
         public FixVec2 Position { 
             get {
                 return info.position;
@@ -97,7 +99,6 @@ namespace TDFP.Core
                 //In edit mode, return out.
                 return;
             }
-            TDFPhysics.AddBody(this);
             coll = GetComponent<TFPCollider>();
             coll.body = this;
             info.position = (FixVec2)fpTransform.Position;
@@ -108,16 +109,13 @@ namespace TDFP.Core
 
             invMass = mass != Fix.Zero ? Fix.One / mass : Fix.Zero;
             invInertia = inertia != Fix.Zero ? Fix.One / inertia : Fix.Zero;
+            RecalcAABB();
+            TDFPhysics.AddBody(this);
         }
 
         private void OnDestroy()
         {
             TDFPhysics.RemoveBody(this);
-        }
-
-        private void Start()
-        {
-            RecalcAABB();
         }
 
         private void Update()

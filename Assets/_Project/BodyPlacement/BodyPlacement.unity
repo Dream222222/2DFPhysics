@@ -434,6 +434,7 @@ MonoBehaviour:
   penetrationCorrection:
     raw: 26214
   settings: {fileID: 11400000, guid: 1d0fc61fc0701c24690461be1a901979, type: 2}
+  debug: 1
 --- !u!114 &195657348
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -546,7 +547,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &466245466
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1418,7 +1419,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1366837765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1892,7 +1893,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1870093825
 MonoBehaviour:
   m_ObjectHideFlags: 0

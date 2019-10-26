@@ -22,7 +22,6 @@ namespace TDFP.Core
         public DynamicTree()
         {
             rootIndex = nullNode;
-            freeList = nullNode;
             
             nodeCapacity = 16;
             nodeCount = 0;
@@ -31,6 +30,7 @@ namespace TDFP.Core
             // Build a linked list for the free list.
             for (var i = 0; i < nodeCapacity; ++i)
             {
+                nodes.Add(new DTNode());
                 nodes[i].nextNodeIndex = i + 1;
                 nodes[i].height = -1;
             }
@@ -42,16 +42,17 @@ namespace TDFP.Core
 
         /// <summary>
         /// Creates a proxy in the tree as a leaf node.
+        /// The AABB is fattened before being inserted.
         /// </summary>
         /// <param name="aabb"></param>
         /// <param name="bodyIndex"></param>
-        /// <returns></returns>
-        public int CreateProxy(AABB aabb, int bodyIndex)
+        /// <returns>The proxy ID.</returns>
+        public int CreateProxy(AABB aabb, int bodyIndex, Fix aabbFattening)
         {
             int proxyId = AllocateNode();
 
             // Fatten the aabb.
-            FixVec2 r = new FixVec2(TDFPhysics.instance.settings.aabbFattening, TDFPhysics.instance.settings.aabbFattening);
+            FixVec2 r = new FixVec2(aabbFattening, aabbFattening);
             nodes[proxyId].aabb.min = aabb.min - r;
             nodes[proxyId].aabb.max = aabb.max + r;
             nodes[proxyId].bodyIndex = bodyIndex;
@@ -88,7 +89,7 @@ namespace TDFP.Core
 
 
             // Extend AABB.
-            var b = aabb;
+            AABB b = aabb;
             FixVec2 r = new FixVec2(TDFPhysics.instance.settings.aabbFattening, TDFPhysics.instance.settings.aabbFattening);
             b.min = b.min - r;
             b.max = b.max + r;
@@ -146,6 +147,43 @@ namespace TDFP.Core
             return cost;
         }
 
+        /// <summary>
+        /// Query an AABB for overlapping proxies.
+        /// </summary>
+        /// <param name="aabb"></param>
+        public void Query(AABB aabb)
+        {
+            Stack<int> stack = new Stack<int>();
+            stack.Push(rootIndex);
+
+            while (stack.Count > 0)
+            {
+                int nodeId = stack.Pop();
+                if (nodeId == nullNode)
+                {
+                    continue;
+                }
+
+                DTNode node = nodes[nodeId];
+                if (node.aabb.Overlaps(aabb))
+                {
+                    if (node.IsLeaf())
+                    {
+                        //bool proceed = callback->QueryCallback(nodeId);
+                        //if (proceed == false)
+                        ///{
+                        //    return;
+                        //}
+                    }
+                    else
+                    {
+                        stack.Push(node.leftChildIndex);
+                        stack.Push(node.rightChildIndex);
+                    }
+                }
+            }
+        }
+
         // Insert a leaf into the tree.
         private void InsertLeaf(int leafIndex)
         {
@@ -156,18 +194,20 @@ namespace TDFP.Core
                 return;
             }
 
+            AABB leafAABB = nodes[leafIndex].aabb;
             // STEP 1: Find the best sibling for the leaf.
-            int bestSibling = 0;
-            bestSibling = PickBestSibling(leafIndex);
+            int bestSibling = rootIndex;
+            bestSibling = PickBestSibling(leafAABB);
 
             // STEP 2: Create a new parent.
             int oldParent = nodes[bestSibling].parentIndex;
             int newParent = AllocateNode();
             nodes[newParent].parentIndex = oldParent;
-            nodes[newParent].aabb = AABB.Union(nodes[leafIndex].aabb, nodes[bestSibling].aabb);
+            nodes[newParent].bodyIndex = nullNode;
+            nodes[newParent].aabb = AABB.Union(leafAABB, nodes[bestSibling].aabb);
             nodes[newParent].height = nodes[bestSibling].height + 1;
 
-            if(oldParent != -1)
+            if(oldParent != nullNode)
             {
                 // The sibling was not the root.
                 if (nodes[oldParent].leftChildIndex == bestSibling)
@@ -196,15 +236,15 @@ namespace TDFP.Core
 
             // STEP 3: Walk back up the tree refitting AABBs.
             int walkIndex = nodes[leafIndex].parentIndex;
-            while(walkIndex != -1)
+            while(walkIndex != nullNode)
             {
+                walkIndex = Rotate(walkIndex);
+
                 int child1 = nodes[walkIndex].leftChildIndex;
                 int child2 = nodes[walkIndex].rightChildIndex;
 
                 nodes[walkIndex].height = 1 + Mathf.Max(nodes[child1].height, nodes[child2].height);
                 nodes[walkIndex].aabb = AABB.Union(nodes[child1].aabb, nodes[child2].aabb);
-
-                Rotate(walkIndex);
 
                 walkIndex = nodes[walkIndex].parentIndex;
             }
@@ -257,8 +297,8 @@ namespace TDFP.Core
                     int childLeft = nodes[index].leftChildIndex;
                     int childRight = nodes[index].rightChildIndex;
 
-                    nodes[index].aabb = AABB.Union(nodes[childLeft].aabb, nodes[childRight].aabb);
                     nodes[index].height = 1 + Mathf.Max(nodes[childLeft].height, nodes[childRight].height);
+                    nodes[index].aabb = AABB.Union(nodes[childLeft].aabb, nodes[childRight].aabb);
 
                     index = nodes[index].parentIndex;
                 }
@@ -278,133 +318,133 @@ namespace TDFP.Core
         /// <returns>The new root index.</returns>
         private int Rotate(int indexA)
         {
-            DTNode A = nodes[indexA];
-            if (A.IsLeaf() || A.height < 2)
+            DTNode node = nodes[indexA];
+            if (node.IsLeaf() || node.height < 2)
             {
                 return indexA;
             }
 
-            int iB = A.leftChildIndex;
-            int iC = A.rightChildIndex;
+            int indexLeft = node.leftChildIndex;
+            int indexRight = node.rightChildIndex;
 
-            DTNode B = nodes[iB];
-            DTNode C = nodes[iC];
+            DTNode leftChild = nodes[indexLeft];
+            DTNode rightChild = nodes[indexRight];
 
-            int balance = C.height - B.height;
+            int balance = rightChild.height - leftChild.height;
 
-            // Rotate C up.
+            // Rotate right branch up.
             if(balance > 1)
             {
-                int iF = C.leftChildIndex;
-                int iG = C.rightChildIndex;
+                int iF = rightChild.leftChildIndex;
+                int iG = rightChild.rightChildIndex;
                 DTNode F = nodes[iF];
                 DTNode G = nodes[iG];
 
-                // Swap A and C
-                C.leftChildIndex = indexA;
-                C.parentIndex = A.parentIndex;
-                A.parentIndex = iC;
+                // Swap node and it's right child.
+                rightChild.leftChildIndex = indexA;
+                rightChild.parentIndex = node.parentIndex;
+                node.parentIndex = indexRight;
 
-                // A's old parent should point to C
-                if (C.parentIndex != nullNode)
+                // The node's old parent should point to its right child.
+                if (rightChild.parentIndex != nullNode)
                 {
-                    if (nodes[C.parentIndex].leftChildIndex == indexA)
+                    if (nodes[rightChild.parentIndex].leftChildIndex == indexA)
                     {
-                        nodes[C.parentIndex].leftChildIndex = iC;
+                        nodes[rightChild.parentIndex].leftChildIndex = indexRight;
                     }
                     else
                     {
-                        nodes[C.parentIndex].rightChildIndex = iC;
+                        nodes[rightChild.parentIndex].rightChildIndex = indexRight;
                     }
                 }
                 else
                 {
-                    rootIndex = iC;
+                    rootIndex = indexRight;
                 }
 
 
                 // Rotate
                 if (F.height > G.height)
                 {
-                    C.rightChildIndex = iF;
-                    A.rightChildIndex = iG;
+                    rightChild.rightChildIndex = iF;
+                    node.rightChildIndex = iG;
                     G.parentIndex = indexA;
-                    A.aabb = AABB.Union(B.aabb, G.aabb);
-                    C.aabb = AABB.Union(A.aabb, F.aabb);
+                    node.aabb = AABB.Union(leftChild.aabb, G.aabb);
+                    rightChild.aabb = AABB.Union(node.aabb, F.aabb);
 
-                    A.height = 1 + Mathf.Max(B.height, G.height);
-                    C.height = 1 + Mathf.Max(A.height, F.height);
+                    node.height = 1 + Mathf.Max(leftChild.height, G.height);
+                    rightChild.height = 1 + Mathf.Max(node.height, F.height);
                 }
                 else
                 {
-                    C.rightChildIndex = iG;
-                    A.rightChildIndex = iF;
+                    rightChild.rightChildIndex = iG;
+                    node.rightChildIndex = iF;
                     F.parentIndex = indexA;
-                    A.aabb = AABB.Union(B.aabb, F.aabb);
-                    C.aabb = AABB.Union(A.aabb, G.aabb);
+                    node.aabb = AABB.Union(leftChild.aabb, F.aabb);
+                    rightChild.aabb = AABB.Union(node.aabb, G.aabb);
 
-                    A.height = 1 + Mathf.Max(B.height, F.height);
-                    C.height = 1 + Mathf.Max(A.height, G.height);
+                    node.height = 1 + Mathf.Max(leftChild.height, F.height);
+                    rightChild.height = 1 + Mathf.Max(node.height, G.height);
                 }
 
-                return iC;
+                return indexRight;
             }
 
-            // Rotate B up
+            // Rotate left branch up
             if (balance < -1)
             {
-                int iD = B.leftChildIndex;
-                int iE = B.rightChildIndex;
+                int iD = leftChild.leftChildIndex;
+                int iE = leftChild.rightChildIndex;
                 DTNode D = nodes[iD];
                 DTNode E = nodes[iE];
 
-                // Swap A and B
-                B.leftChildIndex = indexA;
-                B.parentIndex = A.parentIndex;
-                A.parentIndex = iB;
+                // Swap node and its left child.
+                leftChild.leftChildIndex = indexA;
+                leftChild.parentIndex = node.parentIndex;
+                node.parentIndex = indexLeft;
 
                 // A's old parent should point to B
-                if (B.parentIndex != nullNode)
+                if (leftChild.parentIndex != nullNode)
                 {
-                    if (nodes[B.parentIndex].leftChildIndex == indexA)
+                    if (nodes[leftChild.parentIndex].leftChildIndex == indexA)
                     {
-                        nodes[B.parentIndex].leftChildIndex = iB;
+                        nodes[leftChild.parentIndex].leftChildIndex = indexLeft;
                     }
                     else
                     {
-                        nodes[B.parentIndex].rightChildIndex = iB;
+                        nodes[leftChild.parentIndex].rightChildIndex = indexLeft;
                     }
                 }
                 else
                 {
-                    rootIndex = iB;
+                    rootIndex = indexLeft;
                 }
 
                 // Rotate
                 if (D.height > E.height)
                 {
-                    B.rightChildIndex = iD;
-                    A.leftChildIndex = iE;
+                    leftChild.rightChildIndex = iD;
+                    node.leftChildIndex = iE;
                     E.parentIndex = indexA;
-                    A.aabb = AABB.Union(C.aabb, E.aabb);
-                    B.aabb = AABB.Union(A.aabb, D.aabb);
+                    node.aabb = AABB.Union(rightChild.aabb, E.aabb);
+                    leftChild.aabb = AABB.Union(node.aabb, D.aabb);
 
-                    A.height = 1 + Mathf.Max(C.height, E.height);
-                    B.height = 1 + Mathf.Max(A.height, D.height);
+                    node.height = 1 + Mathf.Max(rightChild.height, E.height);
+                    leftChild.height = 1 + Mathf.Max(node.height, D.height);
                 }
                 else
                 {
-                    B.rightChildIndex = iE;
-                    A.leftChildIndex = iD;
+                    leftChild.rightChildIndex = iE;
+                    node.leftChildIndex = iD;
                     D.parentIndex = indexA;
-                    A.aabb = AABB.Union(C.aabb, D.aabb);
-                    B.aabb = AABB.Union(A.aabb, E.aabb);
+                    node.aabb = AABB.Union(rightChild.aabb, D.aabb);
+                    leftChild.aabb = AABB.Union(node.aabb, E.aabb);
 
-                    A.height = 1 + Mathf.Max(C.height, D.height);
-                    B.height = 1 + Mathf.Max(A.height, E.height);
+                    node.height = 1 + Mathf.Max(rightChild.height, D.height);
+                    leftChild.height = 1 + Mathf.Max(node.height, E.height);
                 }
 
-                return iB;
+                return indexLeft;
             }
 
             return indexA;
@@ -414,7 +454,7 @@ namespace TDFP.Core
         /// Pick the best sibling for a leaf node using "Branch and Bound" algorithm.
         /// </summary>
         /// <param name="leafIndex">The index of the leaf node we want a sibling for.</param>
-        private int PickBestSibling(int leafIndex)
+        private int PickBestSibling(AABB leafAABB)
         {
             int index = rootIndex;
             while (!nodes[index].IsLeaf())
@@ -422,10 +462,10 @@ namespace TDFP.Core
                 int childLeft = nodes[index].leftChildIndex;
                 int childRight = nodes[index].rightChildIndex;
 
-                Fix area = AABB.Area(nodes[index].aabb);
+                Fix area = nodes[index].aabb.Area();
 
-                AABB combinedAABB = AABB.Union(nodes[index].aabb, nodes[leafIndex].aabb);
-                Fix combinedArea = AABB.Area(combinedAABB);
+                AABB combinedAABB = AABB.Union(nodes[index].aabb, leafAABB);
+                Fix combinedArea = combinedAABB.Area();
 
                 // Cost of creating a new parent for this node and the new leaf
                 Fix cost = 2 * combinedArea;
@@ -437,14 +477,14 @@ namespace TDFP.Core
                 Fix costLeft;
                 if (nodes[childLeft].IsLeaf())
                 {
-                    AABB aabb = AABB.Union(nodes[leafIndex].aabb, nodes[childLeft].aabb);
-                    costLeft = AABB.Area(aabb) + inheritanceCost;
+                    AABB aabb = AABB.Union(leafAABB, nodes[childLeft].aabb);
+                    costLeft = aabb.Area() + inheritanceCost;
                 }
                 else
                 {
-                    AABB aabb = AABB.Union(nodes[leafIndex].aabb, nodes[childLeft].aabb);
-                    Fix oldArea = AABB.Area(nodes[childLeft].aabb);
-                    Fix newArea = AABB.Area(aabb);
+                    AABB aabb = AABB.Union(leafAABB, nodes[childLeft].aabb);
+                    Fix oldArea = nodes[childLeft].aabb.Area();
+                    Fix newArea = aabb.Area();
                     costLeft = (newArea - oldArea) + inheritanceCost;
                 }
 
@@ -452,12 +492,12 @@ namespace TDFP.Core
                 Fix costRight;
                 if (nodes[childRight].IsLeaf())
                 {
-                    AABB aabb = AABB.Union(nodes[leafIndex].aabb, nodes[childRight].aabb);
+                    AABB aabb = AABB.Union(leafAABB, nodes[childRight].aabb);
                     costRight = AABB.Area(aabb) + inheritanceCost;
                 }
                 else
                 {
-                    AABB aabb = AABB.Union(nodes[leafIndex].aabb, nodes[childRight].aabb);
+                    AABB aabb = AABB.Union(leafAABB, nodes[childRight].aabb);
                     Fix oldArea = AABB.Area(nodes[childRight].aabb);
                     Fix newArea = AABB.Area(aabb);
                     costRight = (newArea - oldArea) + inheritanceCost;
@@ -499,7 +539,7 @@ namespace TDFP.Core
                 }
 
                 // Build a linked list for the free list.
-                for (int i = nodeCount; i < nodeCapacity; ++i)
+                for (int i = nodeCount; i < nodeCapacity-1; ++i)
                 {
                     nodes[i].nextNodeIndex = i + 1;
                     nodes[i].height = -1;

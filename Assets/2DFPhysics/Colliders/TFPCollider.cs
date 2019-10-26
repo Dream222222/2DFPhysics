@@ -6,6 +6,7 @@ using TDFP.Core;
 
 namespace TDFP.Colliders
 {
+    [RequireComponent(typeof(FPRigidbody))]
     public class TFPCollider : MonoBehaviour
     {
         public FPRigidbody body;
@@ -17,6 +18,7 @@ namespace TDFP.Colliders
 
         protected virtual void Awake()
         {
+            body = GetComponent<FPRigidbody>();
             tdTransform = GetComponent<TDFPTransform>();
             RecalcAABB((FixVec2)tdTransform.Position);
         }

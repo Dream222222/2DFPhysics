@@ -13,16 +13,22 @@ namespace TDFP.Core
         public List<Manifold> narrowPhasePairs = new List<Manifold>();
 
         public SpatialGrid spatialGrid;
-        public DynamicTree dynamicTree;
+        public DynamicTree dynamicTree = new DynamicTree();
 
         public void AddBody(FPRigidbody body)
         {
             bodies.Add(body);
+            body.ProxyID = dynamicTree.CreateProxy(body.bounds, bodies.Count-1, 1);
         }
 
         public void RemoveBody(FPRigidbody body)
         {
-            bodies.Remove(body);
+            int index = bodies.IndexOf(body);
+            if (index > -1)
+            {
+                bodies.RemoveAt(index);
+                dynamicTree.DestroyProxy(body.ProxyID);
+            }
         }
 
         public void Update()
@@ -31,6 +37,13 @@ namespace TDFP.Core
             spatialGrid.Update(this, bodies);
             NarrowPhase();
         }
+
+        #region Broad Phase
+        private void GetPairs()
+        {
+            broadPhasePairs.Clear();
+        }
+        #endregion
 
         #region Narrow Phase
         private void NarrowPhase()

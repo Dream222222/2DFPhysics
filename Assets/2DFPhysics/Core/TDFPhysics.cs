@@ -3,6 +3,9 @@ using FixedPointy;
 using System.Collections.Generic;
 using UnityEngine.Profiling;
 using System;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace TDFP.Core
 {
@@ -16,6 +19,8 @@ namespace TDFP.Core
         [HideInInspector] public Fix penetrationCorrection = (Fix)0.4f;
 
         public TDFPSettings settings;
+
+        public bool debug;
 
         private void Awake()
         {
@@ -69,5 +74,41 @@ namespace TDFP.Core
             return false;
         }
         #endregion
+
+#if UNITY_EDITOR
+        void OnDrawGizmosSelected()
+        {
+            if (!debug)
+            {
+                return;
+            }
+
+            DynamicTree dt = physicsScene.dynamicTree;
+            if (dt == null)
+            {
+                return;
+            }
+
+            for(int i = 0; i < dt.nodeCount; i++)
+            {
+                DTNode node = dt.nodes[i];
+                if(i == dt.rootIndex)
+                {
+                    Handles.color = Color.white;
+                }else if (node.IsLeaf())
+                {
+                    Handles.color = Color.green;
+                }
+                else
+                {
+                    Handles.color = Color.yellow;
+                }
+                Handles.DrawLine((Vector3)(node.aabb.min), (Vector3)(new FixVec3(node.aabb.max.X, node.aabb.min.Y, 0)) );
+                Handles.DrawLine((Vector3)(new FixVec3(node.aabb.max.X, node.aabb.min.Y, 0)), (Vector3)(node.aabb.max));
+                Handles.DrawLine((Vector3)(node.aabb.max), (Vector3)(new FixVec3(node.aabb.min.X, node.aabb.max.Y, 0)));
+                Handles.DrawLine((Vector3)(new FixVec3(node.aabb.min.X, node.aabb.max.Y, 0)), (Vector3)(node.aabb.min));
+            }
+        }
+#endif
     }
 }
