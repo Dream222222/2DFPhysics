@@ -6,7 +6,6 @@ using TDFP.Core;
 
 namespace TDFP.Colliders
 {
-    [RequireComponent(typeof(FPRigidbody))]
     public class TFPCollider : MonoBehaviour
     {
         public FPRigidbody body;

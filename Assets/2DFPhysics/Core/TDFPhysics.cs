@@ -12,7 +12,7 @@ namespace TDFP.Core
     public class TDFPhysics : MonoBehaviour
     {
         public static TDFPhysics instance;
-        private static TDFPPhysicsScene physicsScene = new TDFPPhysicsScene();
+        public static TDFPPhysicsScene physicsScene = new TDFPPhysicsScene();
 
         [HideInInspector] public Fix resting;
         [HideInInspector] public Fix penetrationAllowance = (Fix)0.05f;
@@ -49,7 +49,7 @@ namespace TDFP.Core
         /// <param name="body"></param>
         public static void AddBody(FPRigidbody body)
         {
-            physicsScene.AddBody(body);
+            physicsScene.AddBody(body, (Fix)0.2f);
         }
 
         /// <summary>

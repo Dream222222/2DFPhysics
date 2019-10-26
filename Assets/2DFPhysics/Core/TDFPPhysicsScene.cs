@@ -6,6 +6,7 @@ using System;
 
 namespace TDFP.Core
 {
+    [Serializable]
     public class TDFPPhysicsScene
     {
         public List<FPRigidbody> bodies = new List<FPRigidbody>();
@@ -15,10 +16,10 @@ namespace TDFP.Core
         public SpatialGrid spatialGrid;
         public DynamicTree dynamicTree = new DynamicTree();
 
-        public void AddBody(FPRigidbody body)
+        public void AddBody(FPRigidbody body, Fix aabbFattening)
         {
             bodies.Add(body);
-            body.ProxyID = dynamicTree.CreateProxy(body.bounds, bodies.Count-1, 1);
+            body.ProxyID = dynamicTree.CreateProxy(body.bounds, bodies.Count-1, aabbFattening);
         }
 
         public void RemoveBody(FPRigidbody body)

@@ -18,7 +18,7 @@ namespace TDFP.Core
 
         public bool IsLeaf()
         {
-            return rightChildIndex == -1;
+            return leftChildIndex == -1;
         }
     }
 }

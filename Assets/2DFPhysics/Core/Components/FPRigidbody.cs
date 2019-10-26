@@ -94,12 +94,18 @@ namespace TDFP.Core
         private void Awake()
         {
             fpTransform = GetComponent<TDFPTransform>();
+            coll = GetComponent<TFPCollider>();
+        }
+
+        private void Start()
+        {
+            fpTransform = GetComponent<TDFPTransform>();
+            coll = GetComponent<TFPCollider>();
             if (!Application.isPlaying)
             {
                 //In edit mode, return out.
                 return;
             }
-            coll = GetComponent<TFPCollider>();
             coll.body = this;
             info.position = (FixVec2)fpTransform.Position;
             info.velocity = new FixVec2(0, 0);
@@ -115,6 +121,11 @@ namespace TDFP.Core
 
         private void OnDestroy()
         {
+            if (!Application.isPlaying)
+            {
+                //In edit mode, return out.
+                return;
+            }
             TDFPhysics.RemoveBody(this);
         }
 
