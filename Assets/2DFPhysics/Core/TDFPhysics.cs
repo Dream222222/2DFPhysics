@@ -73,6 +73,7 @@ namespace TDFP.Core
         }
         #endregion
 
+        #region Editor
 #if UNITY_EDITOR
         void OnDrawGizmosSelected()
         {
@@ -108,5 +109,6 @@ namespace TDFP.Core
             }
         }
 #endif
+        #endregion
     }
 }

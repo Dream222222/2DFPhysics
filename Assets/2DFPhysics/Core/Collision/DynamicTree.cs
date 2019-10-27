@@ -69,17 +69,23 @@ namespace TDFP.Core
             FreeNode(proxyId);
         }
 
+        public AABB GetFatAABB(int getPairsProxyID)
+        {
+            return nodes[getPairsProxyID].aabb;
+        }
+
         /// <summary>
-        /// Move a proxy with a swepted AABB. If the proxy has moved outside of its fattened AABB,
+        /// Move a proxy with a swepted AABB. 
+        /// If the proxy has moved outside of its fattened AABB,
         /// then the proxy is removed from the tree and re-inserted.
         /// </summary>
         /// <param name="proxyId">The ID of the proxy.</param>
         /// <param name="aabb">The AABB of the proxy.</param>
         /// <param name="displacement">How much the proxy was displaced.</param>
-        /// <returns>True if the proxy was reinserted. </returns>
+        /// <returns>True if the proxy was reinserted.</returns>
         public bool MoveProxy(int proxyId, AABB aabb, FixVec2 displacement)
         {
-            // If the node is still inside the bounds, don't bother moving it.
+            // The proxy is still within it's fattened AABB, don't move it.
             if (nodes[proxyId].aabb.Contains(aabb))
             {
                 return false;
@@ -151,7 +157,7 @@ namespace TDFP.Core
         /// Query an AABB for overlapping proxies.
         /// </summary>
         /// <param name="aabb"></param>
-        public void Query(AABB aabb)
+        public void Query(ITreeQueryCallback callback, AABB aabb)
         {
             Stack<int> stack = new Stack<int>();
             stack.Push(rootIndex);
@@ -169,11 +175,11 @@ namespace TDFP.Core
                 {
                     if (node.IsLeaf())
                     {
-                        //bool proceed = callback->QueryCallback(nodeId);
-                        //if (proceed == false)
-                        ///{
-                        //    return;
-                        //}
+                        bool proceed = callback.QueryCallback(nodeId);
+                        if (proceed == false)
+                        {
+                            return;
+                        }
                     }
                     else
                     {

@@ -7,13 +7,20 @@ using System;
 namespace TDFP.Core
 {
     [Serializable]
-    public class TDFPPhysicsScene
+    public class TDFPPhysicsScene : ITreeQueryCallback
     {
         public List<FPRigidbody> bodies = new List<FPRigidbody>();
-        public List<Manifold> broadPhasePairs = new List<Manifold>();
-        public List<Manifold> narrowPhasePairs = new List<Manifold>();
+
+        // Broad Phase
+        private ManifoldComparer manifoldComparer = new ManifoldComparer();
 
         public DynamicTree dynamicTree = new DynamicTree();
+        public List<Manifold> broadPhasePairs = new List<Manifold>();
+        public List<int> movedBodies = new List<int>(); // The bodies that have moved since we last checked for pairs.
+        public int movedBodiesCount = 0;
+
+        // Narrow Phase
+        public List<Manifold> narrowPhasePairs = new List<Manifold>();
 
         public void AddBody(FPRigidbody body, Fix aabbFattening)
         {
@@ -33,14 +40,45 @@ namespace TDFP.Core
 
         public void Step()
         {
-            GetPairs();
+            BroadPhase();
             NarrowPhase();
         }
 
         #region Broad Phase
-        private void GetPairs()
+        int getPairsProxyID;
+
+        private void BroadPhase()
         {
             broadPhasePairs.Clear();
+        }
+
+        private void GetPairs()
+        {
+            // Perform tree queries for all proxies that have moved.
+            for (int j = 0; j < movedBodiesCount; ++j)
+            {
+                getPairsProxyID = movedBodies[j];
+                if (getPairsProxyID == -1)
+                {
+                    continue;
+                }
+
+                // We have to query the tree with the fat AABB so that
+                // we don't fail to create a pair that may touch later.
+                AABB fatAABB = dynamicTree.GetFatAABB(getPairsProxyID);
+
+                // Query tree, create pairs and add them pair buffer.
+                dynamicTree.Query(this, fatAABB);
+            }
+
+            movedBodiesCount = 0;
+
+           broadPhasePairs.Sort(0, broadPhasePairs.Count, manifoldComparer);
+        }
+
+        public bool QueryCallback(int proxyID)
+        {
+            return false;
         }
         #endregion
 
@@ -134,5 +172,16 @@ namespace TDFP.Core
             b.info.angularVelocity += b.info.torque * b.invInertia * (dt / (Fix.One + Fix.One));
         }
         #endregion
+
+        /// <summary>
+        /// Query an AABB for overlapping proxies. The callback class
+        /// is called for each proxy that overlaps the supplied AABB.
+        /// </summary>
+        /// <param name="callback"></param>
+        /// <param name="aabb"></param>
+        public void Query(ITreeQueryCallback callback, AABB aabb)
+        {
+            dynamicTree.Query(callback, aabb);
+        }
     }
 }
