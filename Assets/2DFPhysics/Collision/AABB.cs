@@ -14,8 +14,10 @@ namespace TF.Core{
         /// <returns></returns>
         public bool Contains(AABB aabb)
         {
-            return (aabb.min.X >= min.X && aabb.min.Y >= min.Y
-                && aabb.max.X <= max.X && aabb.max.Y <= max.Y);
+            return min._x <= aabb.min._x
+                && min._y <= aabb.min._y
+                && aabb.max._x <= max._x
+                && aabb.max._y <= max._y;
         }
 
         /// <summary>

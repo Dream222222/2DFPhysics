@@ -29,6 +29,6 @@ MonoBehaviour:
   solveCollisionIterations: 3
   defaultMaterial: {fileID: 11400000, guid: ed97aaacf27b7ef44bd18d448dc1d251, type: 2}
   aabbFattening:
-    raw: 13107
+    raw: 6553
   aabbMultiplier:
-    raw: 655
+    raw: 131072

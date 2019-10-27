@@ -86,6 +86,7 @@ namespace TF.Core
         #endregion
 
         public bool simulated = true;
+        public TFBodyType bodyType;
         public InterpolationType interpolation;
         [SerializeField] public Fix mass = 1;
         [SerializeField] public Fix inertia = 0;

@@ -51,13 +51,13 @@ namespace TF.Core
         /// <param name="proxyId"></param>
         /// <param name="aabb"></param>
         /// <param name="displacement"></param>
-        private void MoveProxy(int proxyId, AABB aabb, FixVec2 displacement)
+        private void MoveProxy(int proxyId, AABB sweptAABB, FixVec2 displacement)
         {
-            bool hasMoved = dynamicTree.MoveProxy(proxyId, aabb, displacement);
-            if (hasMoved)
-            {
-                MoveProxy(proxyId);
-            }
+            bool hasMoved = dynamicTree.MoveProxy(proxyId, sweptAABB, displacement);
+            //if (hasMoved)
+            //{
+            MoveProxy(proxyId);
+            //}
         }
 
         private void MoveProxy(int proxyId)
@@ -111,6 +111,10 @@ namespace TF.Core
         // This is called from DynamicTree.Query when we are gathering pairs.
         public bool QueryCallback(int proxyID)
         {
+            if(proxyID == -1)
+            {
+                return true;
+            }
             // A proxy cannot form a pair with itself.
             if (proxyID == getPairsProxyID)
             {
@@ -137,7 +141,7 @@ namespace TF.Core
                 {
                     broadPhasePairs[i].A.currentlyCollidingWith.Add(broadPhasePairs[i].B.coll);
                     broadPhasePairs[i].B.currentlyCollidingWith.Add(broadPhasePairs[i].A.coll);
-                    // If either are a trigger, just exit out.
+                    // If either are a trigger, don't bother.
                     if (broadPhasePairs[i].A.coll.isTrigger
                         || broadPhasePairs[i].B.coll.isTrigger)
                     {
@@ -177,12 +181,7 @@ namespace TF.Core
             // Correct positions
             for (int i = 0; i < narrowPhasePairs.Count; ++i)
             {
-                FixVec2 offsetA;
-                FixVec2 offsetB;
-                narrowPhasePairs[i].PositionalCorrection(out offsetA, out offsetB);
-                // Update the dynamic tree for next physics step.
-                MoveProxy(narrowPhasePairs[i].A.ProxyID, narrowPhasePairs[i].A.bounds, offsetA);
-                MoveProxy(narrowPhasePairs[i].B.ProxyID, narrowPhasePairs[i].B.bounds, offsetB);
+                narrowPhasePairs[i].PositionalCorrection();
             }
 
             for (int i = 0; i < bodies.Count; ++i)
@@ -199,7 +198,7 @@ namespace TF.Core
         private void IntegrateForces(TFRigidbody b, Fix dt)
         {
             // If the body is static, ignore it.
-            if (b.invMass == Fix.Zero)
+            if (b.bodyType == TFBodyType.Static)
             {
                 return;
             }
@@ -210,17 +209,20 @@ namespace TF.Core
         private void IntegrateVelocity(TFRigidbody b, Fix dt)
         {
             // If the body is static, ignore it.
-            if (b.invMass == Fix.Zero)
+            if (b.bodyType == TFBodyType.Static)
             {
                 return;
             }
+            AABB oldAABB = b.bounds;
             FixVec2 offset = b.info.velocity * dt;
             b.Position += offset;
             b.info.rotation += b.info.angularVelocity * dt;
             b.SetRotation(b.info.rotation);
             IntegrateForces(b, dt);
-            // Update the dynamic tree for next physics step.
-            MoveProxy(b.ProxyID, b.bounds, offset);
+
+            // Update the dynamic tree (for Broad Phase).
+            AABB sweptAABB = AABB.Union(b.bounds, oldAABB);
+            MoveProxy(b.ProxyID, sweptAABB, offset);
         }
         #endregion
 

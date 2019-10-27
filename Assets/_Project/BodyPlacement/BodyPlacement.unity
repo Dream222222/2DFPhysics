@@ -161,6 +161,7 @@ MonoBehaviour:
   coll: {fileID: 32075718}
   material: {fileID: 11400000, guid: ed97aaacf27b7ef44bd18d448dc1d251, type: 2}
   simulated: 1
+  bodyType: 0
   interpolation: 0
   mass:
     raw: 0
@@ -633,6 +634,7 @@ MonoBehaviour:
   coll: {fileID: 466245466}
   material: {fileID: 11400000, guid: ed97aaacf27b7ef44bd18d448dc1d251, type: 2}
   simulated: 1
+  bodyType: 2
   interpolation: 0
   mass:
     raw: 65536
@@ -896,6 +898,7 @@ MonoBehaviour:
   coll: {fileID: 761414525}
   material: {fileID: 11400000, guid: ed97aaacf27b7ef44bd18d448dc1d251, type: 2}
   simulated: 1
+  bodyType: 2
   interpolation: 0
   mass:
     raw: 65536
@@ -1079,6 +1082,7 @@ MonoBehaviour:
   coll: {fileID: 779573189}
   material: {fileID: 11400000, guid: ed97aaacf27b7ef44bd18d448dc1d251, type: 2}
   simulated: 1
+  bodyType: 2
   interpolation: 0
   mass:
     raw: 65536
@@ -1485,6 +1489,7 @@ MonoBehaviour:
   coll: {fileID: 1366837765}
   material: {fileID: 11400000, guid: ed97aaacf27b7ef44bd18d448dc1d251, type: 2}
   simulated: 1
+  bodyType: 0
   interpolation: 0
   mass:
     raw: 0
@@ -1765,6 +1770,7 @@ MonoBehaviour:
   coll: {fileID: 1835176949}
   material: {fileID: 11400000, guid: ed97aaacf27b7ef44bd18d448dc1d251, type: 2}
   simulated: 1
+  bodyType: 2
   interpolation: 0
   mass:
     raw: 65536
@@ -1916,6 +1922,7 @@ MonoBehaviour:
   coll: {fileID: 1870093826}
   material: {fileID: 11400000, guid: ed97aaacf27b7ef44bd18d448dc1d251, type: 2}
   simulated: 1
+  bodyType: 0
   interpolation: 0
   mass:
     raw: 0

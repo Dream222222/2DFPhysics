@@ -2,8 +2,8 @@
 {
     public enum TFBodyType
     {
-        staticBody = 0,
-        kinematicBody = 1,
-        dynamicBody = 2
+        Static = 0,
+        Kinematic = 1,
+        Dynamic = 2
     }
 }

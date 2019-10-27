@@ -139,16 +139,14 @@ namespace TF.Core
             }
         }
 
-        public void PositionalCorrection(out FixVec2 offsetA, out FixVec2 offsetB)
+        public void PositionalCorrection()
         {
             TFPhysics settings = TFPhysics.instance;
             FixVec2 correction = (FixMath.Max(penetration - settings.penetrationAllowance, Fix.Zero)) / (A.invMass + B.invMass) 
                 * normal * settings.penetrationCorrection;
 
-            offsetA = correction * A.invMass;
-            offsetB = correction * B.invMass;
-            A.Position -= offsetA;
-            B.Position += offsetB;
+            A.Position -= correction * A.invMass;
+            B.Position += correction * B.invMass;
         }
 
         private void InfiniteMassCorrection()
