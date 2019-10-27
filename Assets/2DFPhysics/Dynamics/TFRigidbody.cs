@@ -134,9 +134,9 @@ namespace TF.Core
 
         private void Update()
         {
+            // EDIT MODE ONLY
             if (!Application.isPlaying)
             {
-                //In edit mode.
                 if (transform.hasChanged)
                 {
                     info.position = (FixVec2)fpTransform.Position;
@@ -147,6 +147,12 @@ namespace TF.Core
             }
         }
 
+        public void FPUpdate(Fix dt)
+        {
+
+        }
+
+        #region AABB
         // Update our AABB with the difference in position.
         public void UpdateBounds(FixVec2 diff)
         {
@@ -160,12 +166,9 @@ namespace TF.Core
             coll.RecalcAABB(info.position);
             bounds = coll.boundingBox;
         }
+        #endregion
 
-        public void FPUpdate(Fix dt)
-        {
-
-        }
-
+        #region Forces
         public void AddForce(FixVec2 force, ForceMode2D mode = ForceMode2D.Force)
         {
             if(mass == 0)
@@ -195,10 +198,12 @@ namespace TF.Core
             coll.SetRotation(degrees);
             fpTransform.Rotation = coll.u;
         }
+        #endregion
 
+        #region Events
         public void HandlePhysicsEvents()
         {
-            for(int i = 0; i < currentlyCollidingWith.Count; i++)
+            for (int i = 0; i < currentlyCollidingWith.Count; i++)
             {
                 if (lastCollidedWith.Contains(currentlyCollidingWith[i]))
                 {
@@ -226,7 +231,7 @@ namespace TF.Core
                 }
             }
 
-            for(int w = 0; w < lastCollidedWith.Count; w++)
+            for (int w = 0; w < lastCollidedWith.Count; w++)
             {
                 //If we've exited collision with a collider.
                 if (!currentlyCollidingWith.Contains(lastCollidedWith[w]))
@@ -244,5 +249,6 @@ namespace TF.Core
             lastCollidedWith = new List<TFCollider>(currentlyCollidingWith);
             currentlyCollidingWith.Clear();
         }
+        #endregion
     }
 }

@@ -200,14 +200,14 @@ namespace FixedPointy
         {
             FixVec3 ea = new FixVec3();
 
-            ea._x = FixMath.Atan2(-m[1, 2], m[2, 2]);
+            ea.x = FixMath.Atan2(-m[1, 2], m[2, 2]);
 
             Fix cosYangle = FixMath.Sqrt(FixMath.Pow(m[0, 0], 2) + FixMath.Pow(m[0, 1], 2));
-            ea._y = FixMath.Atan2(m[0, 2], cosYangle);
+            ea.y = FixMath.Atan2(m[0, 2], cosYangle);
 
-            Fix sinXangle = FixMath.Sin(ea._x);
-            Fix cosXangle = FixMath.Cos(ea._x);
-            ea._z = FixMath.Atan2((cosXangle * m[1, 0]) + (sinXangle * m[2, 0]), (cosXangle * m[1, 1]) + (sinXangle * m[2, 1]));
+            Fix sinXangle = FixMath.Sin(ea.x);
+            Fix cosXangle = FixMath.Cos(ea.x);
+            ea.z = FixMath.Atan2((cosXangle * m[1, 0]) + (sinXangle * m[2, 0]), (cosXangle * m[1, 1]) + (sinXangle * m[2, 1]));
             return ea;
         }
 

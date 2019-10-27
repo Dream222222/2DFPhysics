@@ -105,20 +105,20 @@ namespace TF.Core
 
             if (d.X < Fix.Zero)
             {
-                b.min._x += d._x;
+                b.min.x += d.x;
             }
             else
             {
-                b.max._x += d._x;
+                b.max.x += d.x;
             }
 
             if (d.Y < Fix.Zero)
             {
-                b.min._y += d.Y;
+                b.min.y += d.Y;
             }
             else
             {
-                b.max._y += d.Y;
+                b.max.y += d.Y;
             }
 
             nodes[proxyId].aabb = b;

@@ -39,6 +39,7 @@ public class CreateBodies : MonoBehaviour
         fp.Position = new FixVec3((Fix)v3.x, (Fix)v3.y, 0);
         cc.radius = (Fix)Random.Range(0.05f, 1.2f);
 
+        rb.bodyType = TFBodyType.Dynamic;
         rb.inertia = (Fix)Random.Range(0.0f, 1.0f);
         rb.Position = (FixVec2)fp.Position;
         rb.material = TFPhysics.instance.settings.defaultMaterial;

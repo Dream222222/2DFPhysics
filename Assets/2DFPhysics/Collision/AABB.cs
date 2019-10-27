@@ -14,10 +14,10 @@ namespace TF.Core{
         /// <returns></returns>
         public bool Contains(AABB aabb)
         {
-            return min._x <= aabb.min._x
-                && min._y <= aabb.min._y
-                && aabb.max._x <= max._x
-                && aabb.max._y <= max._y;
+            return min.x <= aabb.min.x
+                && min.y <= aabb.min.y
+                && aabb.max.x <= max.x
+                && aabb.max.y <= max.y;
         }
 
         /// <summary>
@@ -31,10 +31,10 @@ namespace TF.Core{
             d1 = aabb.min - max;
             d2 = min - aabb.max;
 
-            if (d1._x > Fix.Zero || d1._y > Fix.Zero)
+            if (d1.x > Fix.Zero || d1.y > Fix.Zero)
                 return false;
 
-            if (d2._x > Fix.Zero || d2._y > Fix.Zero)
+            if (d2.x > Fix.Zero || d2.y > Fix.Zero)
                 return false;
 
             return true;
@@ -55,8 +55,8 @@ namespace TF.Core{
 
         public static Fix Area(AABB a)
         {
-            Fix wx = a.max._x - a.min._x;
-            Fix wy = a.max._y - a.min._y;
+            Fix wx = a.max.x - a.min.x;
+            Fix wy = a.max.y - a.min.y;
             return 2 * (wx + wy);
         }
     }

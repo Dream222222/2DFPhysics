@@ -197,8 +197,9 @@ namespace TF.Core
 
         private void IntegrateForces(TFRigidbody b, Fix dt)
         {
-            // If the body is static, ignore it.
-            if (b.bodyType == TFBodyType.Static)
+            // If the body is static or kinematic, don't apply any forces.
+            if (b.bodyType == TFBodyType.Static
+                || b.bodyType == TFBodyType.Kinematic)
             {
                 return;
             }
@@ -208,7 +209,7 @@ namespace TF.Core
 
         private void IntegrateVelocity(TFRigidbody b, Fix dt)
         {
-            // If the body is static, ignore it.
+            // If the body is static, don't move it.
             if (b.bodyType == TFBodyType.Static)
             {
                 return;

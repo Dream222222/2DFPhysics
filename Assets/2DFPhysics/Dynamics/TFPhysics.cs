@@ -29,7 +29,7 @@ namespace TF.Core
         }
 
         private void FixedUpdate()
-        {
+        { 
             if (settings.AutoSimulation)
             {
                 StepPhysics(settings.deltaTime);

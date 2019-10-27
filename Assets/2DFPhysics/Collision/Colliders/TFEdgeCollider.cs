@@ -25,37 +25,37 @@ namespace TF.Colliders
         // Used when we only change position.
         public override void MoveAABB(FixVec2 posDiff)
         {
-            boundingBox.min._x += posDiff.X;
-            boundingBox.min._y += posDiff.Y;
-            boundingBox.max._x += posDiff.X;
-            boundingBox.max._y += posDiff.Y;
+            boundingBox.min.x += posDiff.X;
+            boundingBox.min.y += posDiff.Y;
+            boundingBox.max.x += posDiff.X;
+            boundingBox.max.y += posDiff.Y;
         }
 
         // Used when we rotate or vertices are added/removed.
         public override void RecalcAABB(FixVec2 pos)
         {
-            boundingBox.min._x = pos.X;
-            boundingBox.max._x = pos.X;
-            boundingBox.min._y = pos.Y;
-            boundingBox.max._y = pos.Y;
+            boundingBox.min.x = pos.X;
+            boundingBox.max.x = pos.X;
+            boundingBox.min.y = pos.Y;
+            boundingBox.max.y = pos.Y;
             for (int i = 0; i < vertices.Count; i++)
             {
                 FixVec2 v = u.Transposed() * vertices[i];
-                if (v.X + pos._x < boundingBox.min.X)
+                if (v.X + pos.x < boundingBox.min.X)
                 {
-                    boundingBox.min._x = v.X + pos._x;
+                    boundingBox.min.x = v.X + pos.x;
                 }
-                if (v.Y + pos._y < boundingBox.min.Y)
+                if (v.Y + pos.y < boundingBox.min.Y)
                 {
-                    boundingBox.min._y = v.Y + pos._y;
+                    boundingBox.min.y = v.Y + pos.y;
                 }
-                if (v.X + pos._x > boundingBox.max.X)
+                if (v.X + pos.x > boundingBox.max.X)
                 {
-                    boundingBox.max._x = v.X + pos._x;
+                    boundingBox.max.x = v.X + pos.x;
                 }
-                if (v.Y + pos._y > boundingBox.max.Y)
+                if (v.Y + pos.y > boundingBox.max.Y)
                 {
-                    boundingBox.max._y = v.Y + pos._y;
+                    boundingBox.max.y = v.Y + pos.y;
                 }
             }
         }

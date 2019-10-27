@@ -41,14 +41,14 @@ namespace FixedPointy {
 			return rhs;
 		}
 		public static FixVec3 operator - (FixVec3 rhs) {
-			return new FixVec3(-rhs._x, -rhs._y, -rhs._z);
+			return new FixVec3(-rhs.x, -rhs.y, -rhs.z);
 		}
 
 		public static FixVec3 operator + (FixVec3 lhs, FixVec3 rhs) {
-			return new FixVec3(lhs._x + rhs._x, lhs._y + rhs._y, lhs._z + rhs._z);
+			return new FixVec3(lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z);
 		}
 		public static FixVec3 operator - (FixVec3 lhs, FixVec3 rhs) {
-			return new FixVec3(lhs._x - rhs._x, lhs._y - rhs._y, lhs._z - rhs._z);
+			return new FixVec3(lhs.x - rhs.x, lhs.y - rhs.y, lhs.z - rhs.z);
 		}
 
 		public static FixVec3 operator + (FixVec3 lhs, Fix rhs) {
@@ -58,7 +58,7 @@ namespace FixedPointy {
 			return rhs.ScalarAdd(lhs);
 		}
 		public static FixVec3 operator - (FixVec3 lhs, Fix rhs) {
-			return new FixVec3(lhs._x - rhs, lhs._y - rhs, lhs._z - rhs);
+			return new FixVec3(lhs.x - rhs, lhs.y - rhs, lhs.z - rhs);
 		}
 		public static FixVec3 operator * (FixVec3 lhs, Fix rhs) {
 			return lhs.ScalarMultiply(rhs);
@@ -67,61 +67,61 @@ namespace FixedPointy {
 			return rhs.ScalarMultiply(lhs);
 		}
 		public static FixVec3 operator / (FixVec3 lhs, Fix rhs) {
-			return new FixVec3(lhs._x / rhs, lhs._y / rhs, lhs._z / rhs);
+			return new FixVec3(lhs.x / rhs, lhs.y / rhs, lhs.z / rhs);
 		}
 
         public static explicit operator Vector3(FixVec3 v)
         {
-            return new Vector3((float)v._x, (float)v._y, (float)v._z);
+            return new Vector3((float)v.x, (float)v.y, (float)v.z);
         }
 
         public static Fix Dot(FixVec3 lhs, FixVec3 rhs)
         {
-            return lhs._x * rhs._x + lhs._y * rhs._y + lhs._z * rhs._z;
+            return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
         }
 
         public static FixVec3 Cross(FixVec3 lhs, FixVec3 rhs)
         {
             return new FixVec3(
-                lhs._y * rhs._z - lhs._z * rhs._y,
-                lhs._z * rhs._x - lhs._x * rhs._z,
-                lhs._x * rhs._y - lhs._y * rhs._x
+                lhs.y * rhs.z - lhs.z * rhs.y,
+                lhs.z * rhs.x - lhs.x * rhs.z,
+                lhs.x * rhs.y - lhs.y * rhs.x
             );
         }
 
-        public Fix _x, _y, _z;
+        public Fix x, y, z;
 
 		public FixVec3 (Fix x, Fix y, Fix z) {
-			_x = x;
-			_y = y;
-			_z = z;
+			this.x = x;
+			this.y = y;
+			this.z = z;
 		}
 
-		public Fix X { get { return _x; } }
-		public Fix Y { get { return _y; } }
-		public Fix Z { get { return _z; } }
+		public Fix X { get { return x; } }
+		public Fix Y { get { return y; } }
+		public Fix Z { get { return z; } }
 
 		public Fix Dot (FixVec3 rhs) {
-			return _x * rhs._x + _y * rhs._y + _z * rhs._z;
+			return x * rhs.x + y * rhs.y + z * rhs.z;
 		}
 
 		public FixVec3 Cross (FixVec3 rhs) {
 			return new FixVec3(
-				_y * rhs._z - _z * rhs._y,
-				_z * rhs._x - _x * rhs._z,
-				_x * rhs._y - _y * rhs._x
+				y * rhs.z - z * rhs.y,
+				z * rhs.x - x * rhs.z,
+				x * rhs.y - y * rhs.x
 			);
 		}
 
 		FixVec3 ScalarAdd (Fix value) {
-			return new FixVec3(_x + value, _y + value, _z + value);
+			return new FixVec3(x + value, y + value, z + value);
 		}
 		FixVec3 ScalarMultiply (Fix value) {
-			return new FixVec3(_x * value, _y * value, _z * value);
+			return new FixVec3(x * value, y * value, z * value);
 		}
 
 		public Fix GetMagnitude () {
-			ulong N = (ulong)(((long)_x.raw * (long)_x.raw) + ((long)_y.raw * (long)_y.raw) + ((long)_z.raw * (long)_z.raw));
+			ulong N = (ulong)(((long)x.raw * (long)x.raw) + ((long)y.raw * (long)y.raw) + ((long)z.raw * (long)z.raw));
 
             if (N == 0)
             {
@@ -134,15 +134,15 @@ namespace FixedPointy {
 		}
 
 		public FixVec3 Normalize () {
-			if (_x == 0 && _y == 0 && _z == 0)
+			if (x == 0 && y == 0 && z == 0)
 				return FixVec3.Zero;
 
 			var m = GetMagnitude();
-			return new FixVec3(_x / m, _y / m, _z / m);
+			return new FixVec3(x / m, y / m, z / m);
 		}
 
 		public override string ToString () {
-			return string.Format("({0}, {1}, {2})", _x, _y, _z);
+			return string.Format("({0}, {1}, {2})", x, y, z);
 		}
 	}
 }

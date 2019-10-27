@@ -16,9 +16,9 @@ namespace TF.Core
         public static bool AABBvsAABB(TFCollider aCol, TFCollider bCol)
         {
             // Exit with no intersection if found separated along an axis
-            if (aCol.boundingBox.max._x < bCol.boundingBox.min._x || aCol.boundingBox.min._x > bCol.boundingBox.max._x) return false;
+            if (aCol.boundingBox.max.x < bCol.boundingBox.min.x || aCol.boundingBox.min.x > bCol.boundingBox.max.x) return false;
 
-            if (aCol.boundingBox.max._y < bCol.boundingBox.min._y || aCol.boundingBox.min._y > bCol.boundingBox.max._y) return false;
+            if (aCol.boundingBox.max.y < bCol.boundingBox.min.y || aCol.boundingBox.min.y > bCol.boundingBox.max.y) return false;
 
             // No separating axis found, therefor there is at least one overlapping axis
             return true;
