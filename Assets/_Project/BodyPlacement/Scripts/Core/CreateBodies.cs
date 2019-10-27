@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
-using TDFP.Core;
-using TDFP.Colliders;
+using TF.Core;
+using TF.Colliders;
 using FixedPointy;
 
 public class CreateBodies : MonoBehaviour
@@ -28,9 +28,9 @@ public class CreateBodies : MonoBehaviour
     void CreateCircle()
     {
         GameObject go = new GameObject("Circle");
-        TDFPTransform fp = go.AddComponent<TDFPTransform>();
-        TFPCircleCollider cc = go.AddComponent<TFPCircleCollider>();
-        FPRigidbody rb = go.AddComponent<FPRigidbody>();
+        TFTransform fp = go.AddComponent<TFTransform>();
+        TFCircleCollider cc = go.AddComponent<TFCircleCollider>();
+        TFRigidbody rb = go.AddComponent<TFRigidbody>();
 
         var v3 = Input.mousePosition;
         v3.z = 0;
@@ -41,7 +41,7 @@ public class CreateBodies : MonoBehaviour
 
         rb.inertia = (Fix)Random.Range(0.0f, 1.0f);
         rb.Position = (FixVec2)fp.Position;
-        rb.material = TDFPhysics.instance.settings.defaultMaterial;
+        rb.material = TFPhysics.instance.settings.defaultMaterial;
 
         fp.Scale = new FixVec3(cc.radius*((Fix)1.45f), cc.radius*((Fix)1.45f), 1);
 

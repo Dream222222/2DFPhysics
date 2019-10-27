@@ -4,14 +4,14 @@ using UnityEngine;
 using UnityEditor;
 using FixedPointy;
 
-namespace TDFP.Core.Editor
+namespace TF.Core.Editor
 {
     public class DynamicTreeViewerEditor : EditorWindow
     {
-        static TDFPPhysicsScene scene;
+        static TFPhysicsScene scene;
         static DynamicTree tree;
 
-        public static void OpenWindow(TDFPPhysicsScene pScene)
+        public static void OpenWindow(TFPhysicsScene pScene)
         {
             scene = pScene;
             tree = scene.dynamicTree;

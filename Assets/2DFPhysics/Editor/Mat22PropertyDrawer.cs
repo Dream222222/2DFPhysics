@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace TDFP.Core.Editor
+namespace TF.Core.Editor
 {
     [CustomPropertyDrawer(typeof(Mat22))]
     public class Mat22PropertyDrawer : PropertyDrawer
