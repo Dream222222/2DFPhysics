@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2c8230a92714694aa608e7777ba21ab, type: 3}
   m_Name: TDFPSettings
   m_EditorClassIdentifier: 
-  AutoSimulation: 0
+  AutoSimulation: 1
   deltaTime:
     raw: 1092
   gravity:
@@ -44,6 +44,6 @@ MonoBehaviour:
     _y:
       raw: 327680
   aabbFattening:
-    raw: 65536
+    raw: 13107
   aabbMultiplier:
     raw: 65536

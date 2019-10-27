@@ -17,7 +17,6 @@ namespace TDFP.Core
         public DynamicTree dynamicTree = new DynamicTree();
         public List<Manifold> broadPhasePairs = new List<Manifold>();
         public List<int> movedBodies = new List<int>(); // The bodies that have moved since we last checked for pairs.
-        public int movedBodiesCount = 0;
 
         // Narrow Phase
         public List<Manifold> narrowPhasePairs = new List<Manifold>();
@@ -26,6 +25,7 @@ namespace TDFP.Core
         {
             bodies.Add(body);
             body.ProxyID = dynamicTree.CreateProxy(body.bounds, bodies.Count-1, aabbFattening);
+            MoveProxy(body.ProxyID);
         }
 
         public void RemoveBody(FPRigidbody body)
@@ -44,18 +44,40 @@ namespace TDFP.Core
             NarrowPhase();
         }
 
+        /// <summary>
+        /// Call whenever we move a rigidbody, updating it's representation
+        /// in the dynamic tree.
+        /// </summary>
+        /// <param name="proxyId"></param>
+        /// <param name="aabb"></param>
+        /// <param name="displacement"></param>
+        private void MoveProxy(int proxyId, AABB aabb, FixVec2 displacement)
+        {
+            bool hasMoved = dynamicTree.MoveProxy(proxyId, aabb, displacement);
+            if (hasMoved)
+            {
+                MoveProxy(proxyId);
+            }
+        }
+
+        private void MoveProxy(int proxyId)
+        {
+            movedBodies.Add(proxyId);
+        }
+
         #region Broad Phase
         int getPairsProxyID;
 
         private void BroadPhase()
         {
             broadPhasePairs.Clear();
+            GetPairs();
         }
 
         private void GetPairs()
         {
             // Perform tree queries for all proxies that have moved.
-            for (int j = 0; j < movedBodiesCount; ++j)
+            for (int j = 0; j < movedBodies.Count; ++j)
             {
                 getPairsProxyID = movedBodies[j];
                 if (getPairsProxyID == -1)
@@ -70,15 +92,36 @@ namespace TDFP.Core
                 // Query tree, create pairs and add them pair buffer.
                 dynamicTree.Query(this, fatAABB);
             }
-
-            movedBodiesCount = 0;
+            movedBodies.Clear();
 
            broadPhasePairs.Sort(0, broadPhasePairs.Count, manifoldComparer);
+           // Remove duplicates.
+           for(int i = 0; i < broadPhasePairs.Count-1; i++)
+            {
+                if(broadPhasePairs[i].A != broadPhasePairs[i+1].A
+                    || broadPhasePairs[i].B != broadPhasePairs[i + 1].B)
+                {
+                    continue;
+                }
+                // They're the same, remove one.
+                broadPhasePairs.RemoveAt(i);
+            }
         }
 
+        // This is called from DynamicTree.Query when we are gathering pairs.
         public bool QueryCallback(int proxyID)
         {
-            return false;
+            // A proxy cannot form a pair with itself.
+            if (proxyID == getPairsProxyID)
+            {
+                return true;
+            }
+
+            int A = Mathf.Min(proxyID, getPairsProxyID);
+            int B = Mathf.Max(proxyID, getPairsProxyID);
+
+            broadPhasePairs.Add(new Manifold(bodies[dynamicTree.nodes[A].bodyIndex], bodies[dynamicTree.nodes[B].bodyIndex]));
+            return true;
         }
         #endregion
 
@@ -148,19 +191,6 @@ namespace TDFP.Core
             }
         }
 
-        private void IntegrateVelocity(FPRigidbody b, Fix dt)
-        {
-            // If the body is static, ignore it.
-            if (b.invMass == Fix.Zero)
-            {
-                return;
-            }
-            b.Position += b.info.velocity * dt;
-            b.info.rotation += b.info.angularVelocity * dt;
-            b.SetRotation(b.info.rotation);
-            IntegrateForces(b, dt);
-        }
-
         private void IntegrateForces(FPRigidbody b, Fix dt)
         {
             // If the body is static, ignore it.
@@ -170,6 +200,22 @@ namespace TDFP.Core
             }
             b.info.velocity += ((b.info.force * b.invMass) + (TDFPhysics.instance.settings.gravity * b.gravityScale)) * (dt / (Fix.One + Fix.One));
             b.info.angularVelocity += b.info.torque * b.invInertia * (dt / (Fix.One + Fix.One));
+        }
+
+        private void IntegrateVelocity(FPRigidbody b, Fix dt)
+        {
+            // If the body is static, ignore it.
+            if (b.invMass == Fix.Zero)
+            {
+                return;
+            }
+            FixVec2 offset = b.info.velocity * dt;
+            b.Position += offset;
+            b.info.rotation += b.info.angularVelocity * dt;
+            b.SetRotation(b.info.rotation);
+            IntegrateForces(b, dt);
+            // Update the dynamic tree for next physics step.
+            MoveProxy(b.ProxyID, b.bounds, offset);
         }
         #endregion
 

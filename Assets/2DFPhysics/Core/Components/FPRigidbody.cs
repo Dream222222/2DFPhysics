@@ -11,6 +11,7 @@ namespace TDFP.Core
     [ExecuteInEditMode]
     public class FPRigidbody : MonoBehaviour
     {
+        #region Collision Events
         public delegate void OnCollisionEnterAction(TDFPCollision collision);
         public event OnCollisionEnterAction OnCollisionEnter;
         public delegate void OnCollisionStayAction(TDFPCollision collision);
@@ -23,6 +24,7 @@ namespace TDFP.Core
         public event OnTriggerStayAction OnTriggerStay;
         public delegate void OnTriggerEndAction(TFPCollider coll);
         public event OnTriggerEndAction OnTriggerExit;
+        #endregion
 
         [HideInInspector] public List<TFPCollider> lastCollidedWith = new List<TFPCollider>();
         [HideInInspector] public List<TFPCollider> currentlyCollidingWith = new List<TFPCollider>();
