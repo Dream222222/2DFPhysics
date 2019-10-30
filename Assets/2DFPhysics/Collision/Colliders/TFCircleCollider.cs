@@ -41,7 +41,7 @@ namespace TF.Colliders
         void OnDrawGizmosSelected()
         {
             // Draw a yellow sphere at the transform's position
-            UnityEditor.Handles.color = Color.yellow;
+            UnityEditor.Handles.color = Color.green;
             Handles.DrawWireDisc(transform.position + (new Vector3((float)offset.X, (float)offset.Y, 0)), Vector3.forward, ((float)radius));
         }
 #endif

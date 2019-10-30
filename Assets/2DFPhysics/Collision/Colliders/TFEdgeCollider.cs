@@ -190,7 +190,7 @@ namespace TF.Colliders
         {
             FixVec2 pos = (FixVec2)tdTransform.Position;
             // Draw a yellow sphere at the transform's position
-            UnityEditor.Handles.color = Color.yellow;
+            UnityEditor.Handles.color = Color.green;
             for (int i = 0; i < vertices.Count - 1; i++)
             {
                 Handles.DrawLine((Vector3)((pos + (tdTransform.rotation * vertices[i]))),
@@ -198,7 +198,7 @@ namespace TF.Colliders
             }
 
             //Draw bounding box.
-            UnityEditor.Handles.color = Color.white;
+            UnityEditor.Handles.color = Color.red;
             Handles.DrawLine((Vector3)(boundingBox.min), (Vector3)(boundingBox.max));
         }
 #endif

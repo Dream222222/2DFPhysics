@@ -432,7 +432,23 @@ MonoBehaviour:
       raw: 0
     m11:
       raw: 65536
-  vertices: []
+  vertices:
+  - x:
+      raw: -32768
+    y:
+      raw: -32768
+  - x:
+      raw: 32768
+    y:
+      raw: -32768
+  - x:
+      raw: 32768
+    y:
+      raw: 32768
+  - x:
+      raw: -32768
+    y:
+      raw: 32768
   normals: []
 --- !u!114 &2004100479
 MonoBehaviour:
