@@ -236,7 +236,6 @@ public class CharacterController2D : MonoBehaviour
     /// <param name="deltaMovement">Delta movement.</param>
     public void move(FixVec3 deltaMovement)
     {
-        /*
         // save off our current grounded state which we will use for wasGroundedLastFrame and becameGroundedThisFrame
         collisionState.wasGroundedLastFrame = collisionState.below;
 
@@ -250,20 +249,20 @@ public class CharacterController2D : MonoBehaviour
 
         // first, we check for a slope below us before moving
         // only check slopes if we are going down and grounded
-        if (deltaMovement.y < 0f && collisionState.wasGroundedLastFrame)
+        if (deltaMovement.y < Fix.Zero && collisionState.wasGroundedLastFrame)
             handleVerticalSlope(ref deltaMovement);
 
         // now we check movement in the horizontal dir
-        if (deltaMovement.x != 0f)
+        if (deltaMovement.x != Fix.Zero)
             moveHorizontally(ref deltaMovement);
 
         // next, check movement in the vertical dir
-        if (deltaMovement.y != 0f)
+        if (deltaMovement.y != Fix.Zero)
             moveVertically(ref deltaMovement);
 
         // move then update our state
         deltaMovement.z = 0;
-        transform.Translate(deltaMovement, Space.World);
+        //transform.Translate(deltaMovement, Space.World);
 
         // only calculate velocity if we have a non-zero deltaTime
         //if (Time.deltaTime > 0f)
@@ -275,7 +274,7 @@ public class CharacterController2D : MonoBehaviour
 
         // if we are going up a slope we artificially set a y velocity so we need to zero it out here
         if (_isGoingUpSlope)
-            velocity._y = 0;
+            velocity.y = 0;
 
         // send off the collision events if we have a listener
         if (onControllerCollidedEvent != null)
@@ -284,7 +283,88 @@ public class CharacterController2D : MonoBehaviour
                 onControllerCollidedEvent(_raycastHitsThisFrame[i]);
         }
 
-        ignoreOneWayPlatformsThisFrame = false;*/
+        ignoreOneWayPlatformsThisFrame = false;
+    }
+
+    /// <summary>
+    /// moves directly down until grounded
+    /// </summary>
+    public void warpToGrounded()
+    {
+        do
+        {
+            move(new FixVec3(0, -1, 0));
+        } while (!isGrounded);
+    }
+
+    /// <summary>
+    /// this should be called anytime you have to modify the BoxCollider2D at runtime. It will recalculate the distance between the rays used for collision detection.
+    /// It is also used in the skinWidth setter in case it is changed at runtime.
+    /// </summary>
+    public void recalculateDistanceBetweenRays()
+    {
+        // figure out the distance between our rays in both directions
+        // horizontal
+        //var colliderUseableHeight = boxCollider.size.y * Mathf.Abs(transform.localScale.y) - (2 * _skinWidth);
+        //_verticalDistanceBetweenRays = colliderUseableHeight / (totalHorizontalRays - 1);
+
+        // vertical
+        //var colliderUseableWidth = boxCollider.size.x * Mathf.Abs(transform.localScale.x) - (2 * _skinWidth);
+        //_horizontalDistanceBetweenRays = colliderUseableWidth / (totalVerticalRays - 1);
+    }
+    #endregion
+
+    #region Movement Methods
+    /// <summary>
+    /// resets the raycastOrigins to the current extents of the box collider inset by the skinWidth. It is inset
+    /// to avoid casting a ray from a position directly touching another collider which results in wonky normal data.
+    /// </summary>
+    /// <param name="futurePosition">Future position.</param>
+    /// <param name="deltaMovement">Delta movement.</param>
+    void primeRaycastOrigins()
+    {
+        // our raycasts need to be fired from the bounds inset by the skinWidth
+
+        /*var modifiedBounds = boxCollider.bounds;
+        modifiedBounds.Expand(-2 * _skinWidth);
+
+        _raycastOrigins.topLeft = new Vector2(modifiedBounds.min.x, modifiedBounds.max.y);
+        _raycastOrigins.bottomRight = new Vector2(modifiedBounds.max.x, modifiedBounds.min.y);
+        _raycastOrigins.bottomLeft = modifiedBounds.min;*/
+    }
+
+    /// <summary>
+    /// we have to use a bit of trickery in this one. The rays must be cast from a small distance inside of our
+    /// collider (skinWidth) to avoid zero distance rays which will get the wrong normal. Because of this small offset
+    /// we have to increase the ray distance skinWidth then remember to remove skinWidth from deltaMovement before
+    /// actually moving the player
+    /// </summary>
+    void moveHorizontally(ref FixVec3 deltaMovement)
+    {
+    }
+
+    /// <summary>
+    /// handles adjusting deltaMovement if we are going up a slope.
+    /// </summary>
+    /// <returns><c>true</c>, if horizontal slope was handled, <c>false</c> otherwise.</returns>
+    /// <param name="deltaMovement">Delta movement.</param>
+    /// <param name="angle">Angle.</param>
+    bool handleHorizontalSlope(ref FixVec3 deltaMovement, float angle)
+    {
+        return false;
+    }
+
+    void moveVertically(ref FixVec3 deltaMovement)
+    {
+    }
+
+    /// <summary>
+    /// checks the center point under the BoxCollider2D for a slope. If it finds one then the deltaMovement is adjusted so that
+    /// the player stays grounded and the slopeSpeedModifier is taken into account to speed up movement.
+    /// </summary>
+    /// <param name="deltaMovement">Delta movement.</param>
+    private void handleVerticalSlope(ref FixVec3 deltaMovement)
+    {
     }
     #endregion
 }

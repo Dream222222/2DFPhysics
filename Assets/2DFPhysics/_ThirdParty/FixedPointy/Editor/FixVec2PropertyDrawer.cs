@@ -23,15 +23,15 @@ public class FixVec2PropertyDrawer : PropertyDrawer
         var valueYRect = new Rect(position.x + 115, position.y, 50, position.height);
         var buttonRect = new Rect(position.x + 175, position.y, 20, position.height);
 
-        EditorGUI.LabelField(valueLabelRect, $"{Fix.RawToString(property.FindPropertyRelative("_x").FindPropertyRelative("raw").intValue)},{Fix.RawToString(property.FindPropertyRelative("_y").FindPropertyRelative("raw").intValue)}");
+        EditorGUI.LabelField(valueLabelRect, $"{Fix.RawToString(property.FindPropertyRelative("x").FindPropertyRelative("raw").intValue)},{Fix.RawToString(property.FindPropertyRelative("y").FindPropertyRelative("raw").intValue)}");
 
         valX = EditorGUI.DoubleField(valueXRect, valX);
         valY = EditorGUI.DoubleField(valueYRect, valY);
 
         if (GUI.Button(buttonRect, "A"))
         {
-            property.FindPropertyRelative("_x").FindPropertyRelative("raw").intValue = Fix.DoubleToRaw(valX);
-            property.FindPropertyRelative("_y").FindPropertyRelative("raw").intValue = Fix.DoubleToRaw(valY);
+            property.FindPropertyRelative("x").FindPropertyRelative("raw").intValue = Fix.DoubleToRaw(valX);
+            property.FindPropertyRelative("y").FindPropertyRelative("raw").intValue = Fix.DoubleToRaw(valY);
         }
 
         EditorGUI.EndProperty();

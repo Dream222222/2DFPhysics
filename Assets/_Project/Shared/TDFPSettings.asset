@@ -16,10 +16,10 @@ MonoBehaviour:
   deltaTime:
     raw: 1092
   gravity:
-    _x:
+    x:
       raw: 0
-    _y:
-      raw: -131072
+    y:
+      raw: 0
   minimumFrictionImpulse:
     raw: 655
   biasRelative:

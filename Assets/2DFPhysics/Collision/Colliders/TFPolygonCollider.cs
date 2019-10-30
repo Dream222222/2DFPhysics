@@ -190,6 +190,10 @@ namespace TF.Colliders
 #if UNITY_EDITOR
         void OnDrawGizmosSelected()
         {
+            if(vertices.Count == 0)
+            {
+                return;
+            }
             FixVec2 pos = (FixVec2)tdTransform.Position;
             // Draw a yellow sphere at the transform's position
             UnityEditor.Handles.color = Color.yellow;
