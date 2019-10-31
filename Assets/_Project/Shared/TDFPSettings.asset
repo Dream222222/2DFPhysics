@@ -19,7 +19,7 @@ MonoBehaviour:
     x:
       raw: 0
     y:
-      raw: 0
+      raw: -131072
   minimumFrictionImpulse:
     raw: 655
   biasRelative:

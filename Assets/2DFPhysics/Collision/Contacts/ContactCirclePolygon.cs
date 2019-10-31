@@ -22,9 +22,9 @@ namespace TF.Core
             // Exact concept as using support points in Polygon vs Polygon
             Fix separation = -Fix.MaxValue;
             int faceNormal = 0;
-            for(int i = 0; i < B.vertices.Count; ++i)
+            for(int i = 0; i < B.VertexCount; ++i)
             {
-                Fix s = FixVec2.Dot(B.normals[i], center - B.vertices[i]);
+                Fix s = FixVec2.Dot(B.normals[i], center - B.GetVertex(i));
 
                 if(s > A.radius)
                 {
@@ -39,9 +39,9 @@ namespace TF.Core
             }
 
             // Grab face's vertices
-            FixVec2 v1 = B.vertices[faceNormal];
-            int i2 = (faceNormal + 1) < B.vertices.Count ? faceNormal + 1 : 0;
-            FixVec2 v2 = B.vertices[i2];
+            FixVec2 v1 = B.GetVertex(faceNormal);
+            int i2 = (faceNormal + 1) < B.VertexCount ? faceNormal + 1 : 0;
+            FixVec2 v2 = B.GetVertex(i2);
 
             // Check to see if center is within polygon
             if (separation < Fix.Epsilon)

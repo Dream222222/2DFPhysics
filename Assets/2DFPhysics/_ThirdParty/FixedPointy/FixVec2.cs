@@ -68,12 +68,24 @@ namespace FixedPointy {
 			return new FixVec2(lhs.x - rhs, lhs.y - rhs);
 		}
 
+        public static FixVec2 operator *(FixVec2 lhs, FixVec2 rhs)
+        {
+            return new FixVec2(lhs.x * rhs.x, lhs.y * rhs.y);
+        }
+
+        public static FixVec2 operator *(FixVec2 lhs, FixVec3 rhs)
+        {
+            return new FixVec2(lhs.x * rhs.x, lhs.y * rhs.y);
+        }
+
         public static FixVec2 operator * (FixVec2 lhs, Fix rhs) {
 			return lhs.ScalarMultiply(rhs);
 		}
+
 		public static FixVec2 operator * (Fix lhs, FixVec2 rhs) {
 			return rhs.ScalarMultiply(lhs);
 		}
+
 		public static FixVec2 operator / (FixVec2 lhs, Fix rhs) {
 			return new FixVec2(lhs.x / rhs, lhs.y / rhs);
 		}

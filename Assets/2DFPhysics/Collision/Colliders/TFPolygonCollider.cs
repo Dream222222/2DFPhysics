@@ -13,7 +13,15 @@ namespace TF.Colliders
     {
         public static readonly int MAX_POLY_VERTEX_COUNT = 64;
 
-        public List<FixVec2> vertices = new List<FixVec2>();
+        public int VertexCount
+        {
+            get
+            {
+                return vertices.Count;
+            }
+        }
+
+        [SerializeField] private List<FixVec2> vertices = new List<FixVec2>();
         [HideInInspector] public List<FixVec2> normals = new List<FixVec2>();
 
         protected override void Awake()
@@ -40,7 +48,7 @@ namespace TF.Colliders
             boundingBox.max.y = pos.Y;
             for (int i = 0; i < vertices.Count; i++)
             {
-                FixVec2 v = u.Transposed() * vertices[i];
+                FixVec2 v = u.Transposed() * (vertices[i] * tdTransform.scale);
                 if (v.X + pos.x < boundingBox.min.X)
                 {
                     boundingBox.min.x = v.X + pos.x;
@@ -173,7 +181,7 @@ namespace TF.Colliders
 
             for (int i = 0; i < vertices.Count; ++i)
             {
-                FixVec2 v = vertices[i];
+                FixVec2 v = vertices[i] * tdTransform.scale;
                 Fix projection = FixVec2.Dot(v, dir);
 
                 if (projection > bestProjection)
@@ -186,6 +194,11 @@ namespace TF.Colliders
             return bestVertex;
         }
 
+        public FixVec2 GetVertex(int index)
+        {
+            return vertices[index] * tdTransform.scale;
+        }
+
 
 #if UNITY_EDITOR
         void OnDrawGizmosSelected()
@@ -195,15 +208,16 @@ namespace TF.Colliders
                 return;
             }
             FixVec2 pos = (FixVec2)tdTransform.Position;
+            FixVec2 scale = (FixVec2)tdTransform.scale;
             // Draw a yellow sphere at the transform's position
             UnityEditor.Handles.color = Color.green;
             for(int i = 0; i < vertices.Count-1; i++)
             {
-                Handles.DrawLine((Vector3)((pos + (tdTransform.rotation * vertices[i]))), 
-                    (Vector3)((pos + (tdTransform.rotation * vertices[i+1]))) );
+                Handles.DrawLine((Vector3)((pos + (tdTransform.rotation * (vertices[i] * scale)))),
+                    (Vector3)((pos + (tdTransform.rotation * (vertices[i+1] * scale )))) );
             }
-            Handles.DrawLine((Vector3)((pos + (tdTransform.rotation * vertices[vertices.Count-1]) )), 
-                (Vector3)((pos + (tdTransform.rotation * vertices[0]))) );
+            Handles.DrawLine((Vector3)((pos + (tdTransform.rotation * (vertices[vertices.Count-1] * scale)) )), 
+                (Vector3)((pos + (tdTransform.rotation * (vertices[0] * scale)))) );
 
             //Draw bounding box.
             UnityEditor.Handles.color = Color.red;

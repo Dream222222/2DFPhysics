@@ -56,9 +56,9 @@ namespace TF.Core
             FindIncidentFace(incidentFace, refPoly, incPoly, referenceIndex);
 
             // Setup reference face certices
-            FixVec2 v1 = refPoly.vertices[referenceIndex];
-            referenceIndex = referenceIndex + 1 == refPoly.vertices.Count ? 0 : referenceIndex + 1;
-            FixVec2 v2 = refPoly.vertices[referenceIndex];
+            FixVec2 v1 = refPoly.GetVertex(referenceIndex);
+            referenceIndex = referenceIndex + 1 == refPoly.VertexCount ? 0 : referenceIndex + 1;
+            FixVec2 v2 = refPoly.GetVertex(referenceIndex);
 
             // Transform vertices to world space
             v1 = refPoly.u * v1 + refPoly.body.info.position;
@@ -159,7 +159,7 @@ namespace TF.Core
             // Find most anti-normal face on incident polygon
             int incidentFace = 0;
             Fix minDot = Fix.MaxValue;
-            for (int i = 0; i < incPoly.vertices.Count; ++i)
+            for (int i = 0; i < incPoly.VertexCount; ++i)
             {
                 Fix dot = FixVec2.Dot(referenceNormal, incPoly.normals[i]);
                 if (dot < minDot)
@@ -170,9 +170,9 @@ namespace TF.Core
             }
 
             // Assign face vertices for incidentFace
-            v[0] = incPoly.u * incPoly.vertices[incidentFace] + incPoly.body.info.position;
-            incidentFace = incidentFace + 1 >= (int)incPoly.vertices.Count ? 0 : incidentFace + 1;
-            v[1] = incPoly.u * incPoly.vertices[incidentFace] + incPoly.body.info.position;
+            v[0] = incPoly.u * incPoly.GetVertex(incidentFace) + incPoly.body.info.position;
+            incidentFace = incidentFace + 1 >= (int)incPoly.VertexCount ? 0 : incidentFace + 1;
+            v[1] = incPoly.u * incPoly.GetVertex(incidentFace) + incPoly.body.info.position;
         }
 
         public Fix FindAxisLeastPenetration(int[] faceIndex, TFPolygonCollider A, TFPolygonCollider B)
@@ -181,7 +181,7 @@ namespace TF.Core
             int bestIndex = 0;
 
             Mat22 buT;
-            for (int i = 0; i < A.vertices.Count; ++i)
+            for (int i = 0; i < A.VertexCount; ++i)
             {
                 // Retrieve a face normal from A
                 FixVec2 nw = A.u * A.normals[i];
@@ -196,7 +196,7 @@ namespace TF.Core
                 FixVec2 s = B.getSupport(-n);
 
                 // Retrieve vertex on face from A, transform into
-                FixVec2 v = A.vertices[i];
+                FixVec2 v = A.GetVertex(i);
                 v = A.u * v + A.body.Position;
                 v -= B.body.info.position;
                 v = buT * v;
