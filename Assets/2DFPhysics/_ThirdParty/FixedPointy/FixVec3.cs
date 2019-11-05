@@ -125,7 +125,7 @@ namespace FixedPointy {
 
             if (N == 0)
             {
-                return Fix.Zero;
+                return Fix.zero;
             }
             else
             {

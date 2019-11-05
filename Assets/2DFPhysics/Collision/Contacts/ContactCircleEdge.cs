@@ -13,7 +13,7 @@ namespace TF.Core
 
             if (m.contactCount > 0)
             {
-                m.normal *= -Fix.One;
+                m.normal *= -Fix.one;
             }
         }
     }

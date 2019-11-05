@@ -40,6 +40,87 @@ namespace TF.Core
             freeList = 0;
         }
 
+        #region Queries
+        internal void Raycast(ITreeRaycastCallback callback, FixVec2 pointA, FixVec2 pointB)
+        {
+            FixVec2 r = pointB - pointA;
+            if (r.GetMagnitudeSquared() <= Fix.zero)
+            {
+                return;
+            }
+            r.Normalize();
+
+            // v is perpendicular to the segment.
+            FixVec2 v = FixVec2.Cross(Fix.one, r);
+            FixVec2 abs_v = FixVec2.Abs(v);
+
+            // Separating axis for segment (Gino, p80).
+            // |dot(v, p1 - c)| > dot(|v|, h)
+
+            Fix maxFraction = Fix.one;
+
+            // Build a bounding box for the segment.
+            AABB segmentAABB = new AABB();
+            FixVec2 t = pointA + maxFraction * (pointB - pointA);
+            segmentAABB.min = FixVec2.Min(pointA, t);
+            segmentAABB.max = FixVec2.Max(pointA, t);
+
+            Stack<int> stack = new Stack<int>();
+            stack.Push(rootIndex);
+
+            while (stack.Count > 0)
+            {
+                var nodeId = stack.Pop();
+                if (nodeId == nullNode)
+                {
+                    continue;
+                }
+
+                var node = nodes[nodeId];
+
+                if (!node.aabb.Overlaps(segmentAABB))
+                {
+                    continue;
+                }
+
+                // Separating axis for segment (Gino, p80).
+                // |dot(v, p1 - c)| > dot(|v|, h)
+                var c = node.aabb.GetCenter();
+                var h = node.aabb.GetExtents();
+                var separation = FixMath.Abs(FixVec2.Dot(v, pointA - c)) - FixVec2.Dot(abs_v, h);
+                if (separation > Fix.zero)
+                {
+                    continue;
+                }
+
+                if (node.IsLeaf())
+                {
+                    Fix value = callback.RayCastCallback(pointA, pointB, maxFraction, nodeId);
+
+                    if (value == Fix.zero)
+                    {
+                        // The client has terminated the ray cast.
+                        return;
+                    }
+
+                    if (value > Fix.zero)
+                    {
+                        // Update segment bounding box.
+                        maxFraction = value;
+                        FixVec2 g = pointA + maxFraction * (pointB - pointA);
+                        segmentAABB.min = FixVec2.Min(pointA, g);
+                        segmentAABB.max = FixVec2.Max(pointA, g);
+                    }
+                }
+                else
+                {
+                    stack.Push(node.leftChildIndex);
+                    stack.Push(node.rightChildIndex);
+                }
+            }
+        }
+        #endregion
+
         /// <summary>
         /// Creates a proxy in the tree as a leaf node.
         /// The AABB is fattened before being inserted.
@@ -103,7 +184,7 @@ namespace TF.Core
             // Predict AABB displacement.
             FixVec2 d = TFPhysics.instance.settings.aabbMultiplier * displacement;
 
-            if (d.X < Fix.Zero)
+            if (d.X < Fix.zero)
             {
                 b.min.x += d.x;
             }
@@ -112,7 +193,7 @@ namespace TF.Core
                 b.max.x += d.x;
             }
 
-            if (d.Y < Fix.Zero)
+            if (d.Y < Fix.zero)
             {
                 b.min.y += d.Y;
             }

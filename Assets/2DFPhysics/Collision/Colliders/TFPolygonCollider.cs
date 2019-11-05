@@ -27,6 +27,10 @@ namespace TF.Colliders
         protected override void Awake()
         {
             base.Awake();
+            for(int i = 0; i < vertices.Count; i++)
+            {
+                normals.Add(FixVec2.zero);
+            }
             CalculateNormals();
         }
 
@@ -48,7 +52,7 @@ namespace TF.Colliders
             boundingBox.max.y = pos.Y;
             for (int i = 0; i < vertices.Count; i++)
             {
-                FixVec2 v = u.Transposed() * (vertices[i] * tdTransform.scale);
+                FixVec2 v = u.Transposed() * (vertices[i] * tdTransform.LocalScale);
                 if (v.X + pos.x < boundingBox.min.X)
                 {
                     boundingBox.min.x = v.X + pos.x;
@@ -127,14 +131,14 @@ namespace TF.Colliders
                     FixVec2 e1 = verts[nextHullIndex] - verts[hull[outCount]];
                     FixVec2 e2 = verts[i] - verts[hull[outCount]];
                     Fix c = FixVec2.Cross(e1, e2);
-                    if (c < Fix.Zero)
+                    if (c < Fix.zero)
                     {
                         nextHullIndex = i;
                     }
 
                     // Cross product is zero then e vectors are on same line
                     // therefore want to record vertex farthest along that line
-                    if (c == Fix.Zero && e2.GetMagnitudeSquared() > e1.GetMagnitudeSquared())
+                    if (c == Fix.zero && e2.GetMagnitudeSquared() > e1.GetMagnitudeSquared())
                     {
                         nextHullIndex = i;
                     }
@@ -181,7 +185,7 @@ namespace TF.Colliders
 
             for (int i = 0; i < vertices.Count; ++i)
             {
-                FixVec2 v = vertices[i] * tdTransform.scale;
+                FixVec2 v = vertices[i] * tdTransform.LocalScale;
                 Fix projection = FixVec2.Dot(v, dir);
 
                 if (projection > bestProjection)
@@ -196,7 +200,7 @@ namespace TF.Colliders
 
         public FixVec2 GetVertex(int index)
         {
-            return vertices[index] * tdTransform.scale;
+            return vertices[index] * tdTransform.LocalScale;
         }
 
 
@@ -208,16 +212,16 @@ namespace TF.Colliders
                 return;
             }
             FixVec2 pos = (FixVec2)tdTransform.Position;
-            FixVec2 scale = (FixVec2)tdTransform.scale;
+            FixVec2 scale = (FixVec2)tdTransform.LocalScale;
             // Draw a yellow sphere at the transform's position
             UnityEditor.Handles.color = Color.green;
             for(int i = 0; i < vertices.Count-1; i++)
             {
-                Handles.DrawLine((Vector3)((pos + (tdTransform.rotation * (vertices[i] * scale)))),
-                    (Vector3)((pos + (tdTransform.rotation * (vertices[i+1] * scale )))) );
+                Handles.DrawLine((Vector3)((pos + (tdTransform.Rotation * (vertices[i] * scale)))),
+                    (Vector3)((pos + (tdTransform.Rotation * (vertices[i+1] * scale )))) );
             }
-            Handles.DrawLine((Vector3)((pos + (tdTransform.rotation * (vertices[vertices.Count-1] * scale)) )), 
-                (Vector3)((pos + (tdTransform.rotation * (vertices[0] * scale)))) );
+            Handles.DrawLine((Vector3)((pos + (tdTransform.Rotation * (vertices[vertices.Count-1] * scale)) )), 
+                (Vector3)((pos + (tdTransform.Rotation * (vertices[0] * scale)))) );
 
             //Draw bounding box.
             UnityEditor.Handles.color = Color.red;

@@ -57,12 +57,12 @@ namespace FixedPointy
             result.z = FixMath.Atan2(t0, t1);
 
             Fix t2 = 2 * (q.w * q.y - q.z * q.x);
-            if (FixMath.Abs(t2) >= Fix.One)
+            if (FixMath.Abs(t2) >= Fix.one)
             {
                 result.y = FixMath.PI / 2;
                 //t2 = 1;
             }
-            else if (t2 <= -Fix.One)
+            else if (t2 <= -Fix.one)
             {
                 result.y = -(FixMath.PI / 2);
                 //t2 = -1;

@@ -18,14 +18,14 @@ namespace TF.Core
             // Check for a separating axis with A's face planes
             int[] faceA = { 0 };
             Fix penetrationA = FindAxisLeastPenetration(faceA, A, B);
-            if (penetrationA >= Fix.Zero)
+            if (penetrationA >= Fix.zero)
             {
                 return;
             }
 
             int[] faceB = { 0 };
             Fix penetrationB = FindAxisLeastPenetration(faceB, B, A);
-            if (penetrationB >= Fix.Zero)
+            if (penetrationB >= Fix.zero)
             {
                 return;
             }
@@ -94,7 +94,7 @@ namespace TF.Core
             // Keep points behind reference face
             int cp = 0; // clipped points behind reference face
             Fix separation = FixVec2.Dot(refFaceNormal, incidentFace[0]) - refC;
-            if (separation <= Fix.Zero)
+            if (separation <= Fix.zero)
             {
                 m.contacts[cp] = incidentFace[0];
                 m.penetration = -separation;
@@ -106,7 +106,7 @@ namespace TF.Core
             }
 
             separation = FixVec2.Dot(refFaceNormal, incidentFace[1]) - refC;
-            if (separation <= Fix.Zero)
+            if (separation <= Fix.zero)
             {
                 m.contacts[cp] = incidentFace[1];
                 m.penetration += -separation;
@@ -129,11 +129,11 @@ namespace TF.Core
             Fix d2 = FixVec2.Dot(n, face[1]) - c;
 
             // If negative (behind plane) clip
-            if (d1 <= Fix.Zero) o[sp++] = face[0];
-            if (d2 <= Fix.Zero) o[sp++] = face[1];
+            if (d1 <= Fix.zero) o[sp++] = face[0];
+            if (d2 <= Fix.zero) o[sp++] = face[1];
 
             // If the points are on different sides of the plane
-            if (d1 * d2 < Fix.Zero) // less than to ignore -0.0f
+            if (d1 * d2 < Fix.zero) // less than to ignore -0.0f
             {
                 // Push interesection point
                 Fix alpha = d1 / (d1 - d2);

@@ -8,6 +8,14 @@ namespace TF.Colliders
 {
     public class TFCollider : MonoBehaviour
     {
+        public FixVec2 Size
+        {
+            get
+            {
+                return boundingBox.max - boundingBox.min;
+            }
+        }
+
         public TFRigidbody body;
         public TFTransform tdTransform;
         public AABB boundingBox;
@@ -40,6 +48,12 @@ namespace TF.Colliders
         public virtual TFColliderType GetCType()
         {
             return 0;
+        }
+
+        public virtual bool Raycast(out TFRaycastHit2D hit, FixVec2 pointA, FixVec2 pointB, Fix maxFraction)
+        {
+            hit = default;
+            return false;
         }
     }
 }

@@ -59,7 +59,7 @@ namespace TF.Core
             m.penetration = A.radius - separation;
 
             //Closest to v1
-            if(dot1 <= Fix.Zero)
+            if(dot1 <= Fix.zero)
             {
                 if ((center-v1).GetMagnitudeSquared() > A.radius * A.radius)
                 {
@@ -74,7 +74,7 @@ namespace TF.Core
                 v1 = B.u * v1 + b.Position;
                 m.contacts[0] = v1;
             }
-            else if(dot2 <= Fix.Zero)
+            else if(dot2 <= Fix.zero)
             {
                 //Closest to v2
                 if ((center-v2).GetMagnitudeSquared() > A.radius * A.radius)

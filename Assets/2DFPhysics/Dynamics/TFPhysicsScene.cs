@@ -7,7 +7,7 @@ using System;
 namespace TF.Core
 {
     [Serializable]
-    public class TFPhysicsScene : ITreeQueryCallback
+    public class TFPhysicsScene : ITreeQueryCallback, ITreeRaycastCallback
     {
         public List<TFRigidbody> bodies = new List<TFRigidbody>();
 
@@ -203,8 +203,8 @@ namespace TF.Core
             {
                 return;
             }
-            b.info.velocity += ((b.info.force * b.invMass) + (TFPhysics.instance.settings.gravity * b.gravityScale)) * (dt / (Fix.One + Fix.One));
-            b.info.angularVelocity += b.info.torque * b.invInertia * (dt / (Fix.One + Fix.One));
+            b.info.velocity += ((b.info.force * b.invMass) + (TFPhysics.instance.settings.gravity * b.gravityScale)) * (dt / 2);
+            b.info.angularVelocity += b.info.torque * b.invInertia * (dt / 2);
         }
 
         private void IntegrateVelocity(TFRigidbody b, Fix dt)
@@ -236,6 +236,31 @@ namespace TF.Core
         public void Query(ITreeQueryCallback callback, AABB aabb)
         {
             dynamicTree.Query(callback, aabb);
+        }
+
+        public bool Raycast(FixVec2 pointA, FixVec2 pointB, out TFRaycastHit2D hit)
+        {
+            hit = default;
+            dynamicTree.Raycast(this, pointA, pointB);
+            return false;
+        }
+
+        public Fix RayCastCallback(FixVec2 pointA, FixVec2 pointB, Fix maxFraction, int proxyID)
+        {
+            bool hit = false;
+            TFRigidbody rigid = bodies[dynamicTree.nodes[proxyID].bodyIndex];
+            TFRaycastHit2D rHit;
+            hit = rigid.coll.Raycast(out rHit, pointA, pointB, maxFraction);
+
+            if (!hit)
+            {
+                // We did not hit the body, ignore it and use our max ray length.
+                return maxFraction;
+            }
+
+            Fix fraction = rHit.fraction;
+            FixVec2 point = (Fix.one - fraction) * pointA + fraction * pointB;
+            return Fix.zero;
         }
     }
 }

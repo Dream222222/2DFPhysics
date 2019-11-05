@@ -33,22 +33,22 @@ namespace TF.Core
             }
         }
 
-        public FixVec3 Scale
+        public FixVec3 LocalScale
         {
             get
             {
-                return scale;
+                return localScale;
             }
             set
             {
-                scale = value;
-                transform.localScale = (Vector3)scale;
+                localScale = value;
+                transform.localScale = (Vector3)localScale;
             }
         }
 
         [SerializeField] private FixVec3 position;
-        public FixVec3 scale;
-        [HideInInspector]public Mat22 rotation;
+        [SerializeField] private FixVec3 localScale;
+        [HideInInspector] private Mat22 rotation;
 
         public void OnValidate()
         {
@@ -57,7 +57,7 @@ namespace TF.Core
                 return;
             }
             transform.position = (Vector3)position;
-            transform.localScale = (Vector3)scale;
+            transform.localScale = (Vector3)localScale;
             UpdateTransformRotation();
         }
 

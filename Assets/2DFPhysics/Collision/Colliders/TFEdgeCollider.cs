@@ -119,14 +119,14 @@ namespace TF.Colliders
                     FixVec2 e1 = verts[nextHullIndex] - verts[hull[outCount]];
                     FixVec2 e2 = verts[i] - verts[hull[outCount]];
                     Fix c = FixVec2.Cross(e1, e2);
-                    if (c < Fix.Zero)
+                    if (c < Fix.zero)
                     {
                         nextHullIndex = i;
                     }
 
                     // Cross product is zero then e vectors are on same line
                     // therefore want to record vertex farthest along that line
-                    if (c == Fix.Zero && e2.GetMagnitudeSquared() > e1.GetMagnitudeSquared())
+                    if (c == Fix.zero && e2.GetMagnitudeSquared() > e1.GetMagnitudeSquared())
                     {
                         nextHullIndex = i;
                     }
@@ -193,8 +193,8 @@ namespace TF.Colliders
             UnityEditor.Handles.color = Color.green;
             for (int i = 0; i < vertices.Count - 1; i++)
             {
-                Handles.DrawLine((Vector3)((pos + (tdTransform.rotation * vertices[i]))),
-                    (Vector3)((pos + (tdTransform.rotation * vertices[i + 1]))));
+                Handles.DrawLine((Vector3)((pos + (tdTransform.Rotation * vertices[i]))),
+                    (Vector3)((pos + (tdTransform.Rotation * vertices[i + 1]))));
             }
 
             //Draw bounding box.

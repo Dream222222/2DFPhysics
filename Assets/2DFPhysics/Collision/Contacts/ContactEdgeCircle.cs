@@ -35,7 +35,7 @@ namespace TF.Core
                 Fix discriminant = l * l - 4 * k * n;
                 
                 // No intersection.
-                if(discriminant <= Fix.Zero)
+                if(discriminant <= Fix.zero)
                 {
                     continue;
                 }
@@ -47,7 +47,7 @@ namespace TF.Core
 
                 Fix s = FixVec2.Dot(A.normals[i], circleCenter - A.vertices[i]);
 
-                if (t1 >= Fix.Zero && t1 <= Fix.One)
+                if (t1 >= Fix.zero && t1 <= Fix.one)
                 {
                     //t1 is the intersection, and it's closer than t2.
                     m.contactCount = 1;
@@ -57,7 +57,7 @@ namespace TF.Core
                     return;
                 }
 
-                if(t2 >= Fix.Zero && t2 <= Fix.One)
+                if(t2 >= Fix.zero && t2 <= Fix.one)
                 {
                     // t1 didn't insection, so we either started inside the circle
                     // or completely past it.

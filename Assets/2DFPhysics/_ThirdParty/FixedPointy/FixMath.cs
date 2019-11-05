@@ -23,6 +23,7 @@
 
 using System;
 using System.Linq;
+using UnityEngine;
 
 namespace FixedPointy {
 	public static partial class FixMath {
@@ -192,8 +193,10 @@ namespace FixedPointy {
 
 		public static Fix Atan2 (Fix y, Fix x) {
             if (x == 0 && y == 0)
-                return Fix.Zero;
-				//throw new ArgumentOutOfRangeException("y and x cannot both be 0.");
+            {
+                Debug.LogError("x and y cannot both be 0.");
+                return Fix.zero;
+            }
 
 			Fix angle = 0;
 			Fix xNew, yNew;
@@ -271,7 +274,7 @@ namespace FixedPointy {
 			exp *= Log(b, 2);
 			b = 2;
 			intPow = (int)((exp.raw + (Fix.FRACTION_RANGE >> 1)) >> Fix.FRACTIONAL_BITS);
-			intFactor = intPow < 0 ? Fix.One >> -intPow : Fix.One << intPow;
+			intFactor = intPow < 0 ? Fix.one >> -intPow : Fix.one << intPow;
 
 			long x = (
 				((exp.raw - (intPow << Fix.FRACTIONAL_BITS)) * _ln2Const.raw)

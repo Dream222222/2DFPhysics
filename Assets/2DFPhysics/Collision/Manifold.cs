@@ -95,7 +95,7 @@ namespace TF.Core
                     + (rbCrossN * rbCrossN) * B.invInertia;
 
                 // Calculate impulse scalar
-                Fix j = -(Fix.One + e) * contactVel;
+                Fix j = -(Fix.one + e) * contactVel;
                 j /= invMassSum;
                 j /= contactCount;
 
@@ -117,7 +117,7 @@ namespace TF.Core
                 jt /= contactCount;
 
                 //Don't apply tiny friction impulses
-                if(FixMath.Abs(jt) <= Fix.Zero)
+                if(FixMath.Abs(jt) <= Fix.zero)
                 {
                     return;
                 }
@@ -142,7 +142,7 @@ namespace TF.Core
         public void PositionalCorrection()
         {
             TFPhysics settings = TFPhysics.instance;
-            FixVec2 correction = (FixMath.Max(penetration - settings.penetrationAllowance, Fix.Zero)) / (A.invMass + B.invMass) 
+            FixVec2 correction = (FixMath.Max(penetration - settings.penetrationAllowance, Fix.zero)) / (A.invMass + B.invMass) 
                 * normal * settings.penetrationCorrection;
 
             A.Position -= correction * A.invMass;
@@ -151,8 +151,8 @@ namespace TF.Core
 
         private void InfiniteMassCorrection()
         {
-            A.info.velocity = FixVec2.Zero;
-            B.info.velocity = FixVec2.Zero;
+            A.info.velocity = FixVec2.zero;
+            B.info.velocity = FixVec2.zero;
         }
     }
 }

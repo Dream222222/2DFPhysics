@@ -44,7 +44,7 @@ public class CreateBodies : MonoBehaviour
         rb.Position = (FixVec2)fp.Position;
         rb.material = TFPhysics.instance.settings.defaultMaterial;
 
-        fp.Scale = new FixVec3(cc.radius*((Fix)1.45f), cc.radius*((Fix)1.45f), 1);
+        fp.LocalScale = new FixVec3(cc.radius*((Fix)1.45f), cc.radius*((Fix)1.45f), 1);
 
         //Sprite
         GameObject cSprite = GameObject.Instantiate(circleSprite);

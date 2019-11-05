@@ -92,6 +92,10 @@ namespace TF.Core
 
         public static Fix MatrixToDegrees(Mat22 m)
         {
+            if(m.m10 == Fix.zero && m.m00 == Fix.zero)
+            {
+                return Fix.zero;
+            }
             return FixMath.Atan2(m.m10, m.m00);
         }
 

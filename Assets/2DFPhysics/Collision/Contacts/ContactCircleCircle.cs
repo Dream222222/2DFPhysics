@@ -29,7 +29,7 @@ namespace TF.Core
 
             m.contactCount = 1;
 
-            if(distance == Fix.Zero)
+            if(distance == Fix.zero)
             {
                 m.penetration = A.radius;
                 m.normal = new FixVec2(1, 0);

@@ -111,13 +111,13 @@ namespace TF.Core
             }
             coll.body = this;
             info.position = (FixVec2)fpTransform.Position;
-            info.velocity = new FixVec2(0, 0);
-            info.angularVelocity = 0;
-            info.torque = 0;
-            info.force = FixVec2.Zero;
+            info.velocity = FixVec2.zero;
+            info.angularVelocity = Fix.zero;
+            info.torque = Fix.zero;
+            info.force = FixVec2.zero;
 
-            invMass = mass != Fix.Zero ? Fix.One / mass : Fix.Zero;
-            invInertia = inertia != Fix.Zero ? Fix.One / inertia : Fix.Zero;
+            invMass = mass != Fix.zero ? Fix.one / mass : Fix.zero;
+            invInertia = inertia != Fix.zero ? Fix.one / inertia : Fix.zero;
             RecalcAABB();
             TFPhysics.AddBody(this);
         }
@@ -140,7 +140,7 @@ namespace TF.Core
                 if (transform.hasChanged)
                 {
                     info.position = (FixVec2)fpTransform.Position;
-                    info.rotation = Mat22.MatrixToDegrees(fpTransform.rotation);
+                    info.rotation = Mat22.MatrixToDegrees(fpTransform.Rotation);
                     SetRotation(info.rotation);
                     RecalcAABB();
                 }

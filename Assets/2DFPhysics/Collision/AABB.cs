@@ -1,4 +1,5 @@
-﻿using FixedPointy;
+﻿using System;
+using FixedPointy;
 
 namespace TF.Core{
     //Axis Aligned Bounding Box
@@ -31,10 +32,10 @@ namespace TF.Core{
             d1 = aabb.min - max;
             d2 = min - aabb.max;
 
-            if (d1.x > Fix.Zero || d1.y > Fix.Zero)
+            if (d1.x > Fix.zero || d1.y > Fix.zero)
                 return false;
 
-            if (d2.x > Fix.Zero || d2.y > Fix.Zero)
+            if (d2.x > Fix.zero || d2.y > Fix.zero)
                 return false;
 
             return true;
@@ -43,6 +44,17 @@ namespace TF.Core{
         public Fix Area()
         {
             return Area(this);
+        }
+
+        /// <summary>
+        /// Expand the AABB by increasing its size by amount along each side.
+        /// </summary>
+        /// <param name="amount"></param>
+        public void Expand(Fix amount)
+        {
+            FixVec2 extendAmt = FixVec2.one * amount;
+            min -= extendAmt;
+            max += extendAmt;
         }
 
         public static AABB Union(AABB a, AABB b)
@@ -58,6 +70,16 @@ namespace TF.Core{
             Fix wx = a.max.x - a.min.x;
             Fix wy = a.max.y - a.min.y;
             return 2 * (wx + wy);
+        }
+
+        public FixVec2 GetCenter()
+        {
+            return (Fix.one/2) * (min + max);
+        }
+
+        public FixVec2 GetExtents()
+        {
+            return (Fix.one/2) * (max - min);
         }
     }
 }

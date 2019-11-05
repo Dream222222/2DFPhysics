@@ -27,10 +27,10 @@ using UnityEngine;
 namespace FixedPointy {
     [Serializable]
 	public struct FixVec2 {
-		public static readonly FixVec2 Zero = new FixVec2();
-		public static readonly FixVec2 One = new FixVec2(1, 1);
-		public static readonly FixVec2 UnitX = new FixVec2(1, 0);
-		public static readonly FixVec2 UnitY = new FixVec2(0, 1);
+		public static readonly FixVec2 zero = new FixVec2();
+		public static readonly FixVec2 one = new FixVec2(1, 1);
+        public static readonly FixVec2 right = new FixVec2(1, 0);
+        public static readonly FixVec2 up = new FixVec2(0, 1);
 
         public static bool operator ==(FixVec2 lhs, FixVec2 rhs)
         {
@@ -38,10 +38,25 @@ namespace FixedPointy {
                 && lhs.Y.raw == rhs.Y.raw;
         }
 
+        public static FixVec2 Abs(FixVec2 v)
+        {
+            return new FixVec2(FixMath.Abs(v.x), FixMath.Abs(v.y));
+        }
+
         public static bool operator !=(FixVec2 lhs, FixVec2 rhs)
         {
             return lhs.X.raw != rhs.X.raw
                 || lhs.Y.raw != rhs.Y.raw;
+        }
+
+        internal static FixVec2 Min(FixVec2 pointA, FixVec2 t)
+        {
+            return new FixVec2(FixMath.Min(pointA.x, t.x), FixMath.Min(pointA.y, t.y));
+        }
+
+        internal static FixVec2 Max(FixVec2 pointA, FixVec2 t)
+        {
+            return new FixVec2(FixMath.Max(pointA.x, t.x), FixMath.Max(pointA.y, t.y));
         }
 
         public static FixVec2 operator + (FixVec2 rhs) {
@@ -165,7 +180,7 @@ namespace FixedPointy {
         public FixVec2 Normalized()
         {
             if (x == 0 && y == 0)
-                return FixVec2.Zero;
+                return FixVec2.zero;
 
             var m = GetMagnitude();
             return new FixVec2(x / m, y / m);
